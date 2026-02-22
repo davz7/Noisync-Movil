@@ -1,42 +1,26 @@
 package mx.edu.noisync.ui.theme.components
 
 import android.R.attr.onClick
-import android.content.res.Configuration
-import android.hardware.lights.Light
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialogDefaults.containerColor
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.Bullet
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +40,7 @@ fun SongCard(song: Song, onOpen: () -> Unit){
                 .fillMaxWidth()
         ){
             Image(
-                painter = painterResource(R.drawable.masterofpuppets),
+                painter = painterResource(R.drawable.r),
                 contentDescription = "Song Image",
                 modifier = Modifier
                     .size(50.dp)
@@ -98,13 +82,13 @@ fun SongCard(song: Song, onOpen: () -> Unit){
                         }
                         Spacer(modifier = Modifier.width(150.dp))
                         Surface(
+                            onClick = { /*TODO*/ },
                             shape = RoundedCornerShape(10.dp),
                             shadowElevation = 1.dp,
                             color = Color.Black,
                             modifier = Modifier
                                 .animateContentSize()
                                 .padding(1.dp)
-                                .clickable{ onClick }
                         ) {
                             Text(
                                 text = "Abrir",
@@ -124,6 +108,6 @@ fun SongCard(song: Song, onOpen: () -> Unit){
 @Preview
 @Composable
 fun SongCardPreview(){
-    SongCard(song = Song(id = "1", title = "Master Of Puppets - Remastered", bandName = "Metalica", isPublic = true), onOpen = {})
+    SongCard(song = Song(id = "1", title = "Song name", bandName = "Band name", isPublic = true), onOpen = {})
 }
 
