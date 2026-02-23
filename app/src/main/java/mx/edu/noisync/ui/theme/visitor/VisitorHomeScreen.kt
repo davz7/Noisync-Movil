@@ -1,21 +1,20 @@
 package mx.edu.noisync.ui.theme.visitor
 
+import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -30,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
+import mx.edu.noisync.data.fake.FakeSongs
 import mx.edu.noisync.model.Song
 import mx.edu.noisync.ui.theme.components.SongCard
 
@@ -37,8 +37,9 @@ import mx.edu.noisync.ui.theme.components.SongCard
 fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
     Column(
         modifier = Modifier
-            .padding(15.dp)
             .fillMaxSize()
+            .systemBarsPadding()
+            .padding(15.dp)
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -57,7 +58,7 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
             )
             Spacer(modifier = Modifier.weight(1f))
             Image(
-                painterResource(R.drawable.boton_de_lista),
+                painterResource(R.drawable.button_list),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .size(20.dp)
@@ -90,7 +91,7 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
-                    painterResource(R.drawable.simbolo_de_la_interfaz_de_busqueda),
+                    painterResource(R.drawable.search_icon),
                     contentDescription = "Busqueda",
                     modifier = Modifier
                         .size(20.dp)
@@ -165,7 +166,7 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
             Button(
                 onClick = { /*TODO*/ },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE8E3E3),
+                    containerColor = Color(0xFFF2F3F4),
                     contentColor = Color.Black
                 )
             ) {
@@ -175,4 +176,15 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
             }
         }
     }
+}
+
+@Preview(showBackground = true, name = "VisitorHomePreview")
+@Composable
+fun VisitorHomeScreenPreview(){
+    VisitorHomeScreen(
+        songs = FakeSongs.publicSongs,
+        onOpenSong = { song ->
+            Log.d("Song", song.title)
+        }
+    )
 }
