@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,14 +58,21 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
                 text = "Noisync"
             )
             Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painterResource(R.drawable.button_list),
-                contentDescription = "Logo",
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                onClick = {/*Todo*/},
                 modifier = Modifier
-                    .size(20.dp)
-                    //Tengo que hacerlo clickeable
 
-            )
+            ){
+                Image(
+                    painterResource(R.drawable.button_list),
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(10.dp))
+                        .size(25.dp)
+                        .padding(5.dp)
+                )
+            }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -81,14 +89,17 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
         }
         Surface(
             shape = RoundedCornerShape(10.dp),
+            onClick = { /*TODO*/ },
             shadowElevation = 1.dp,
             color = Color(246, 247, 248, 255),
             modifier = Modifier
-                .padding(10.dp)
                 .fillMaxWidth()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)
             ) {
                 Image(
                     painterResource(R.drawable.search_icon),
