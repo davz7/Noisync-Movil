@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.theme.components
+package mx.edu.noisync.ui.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image

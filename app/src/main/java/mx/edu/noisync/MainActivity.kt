@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import mx.edu.noisync.data.fake.FakeSongs
-import mx.edu.noisync.ui.theme.visitor.VisitorHomeScreen
+import mx.edu.noisync.ui.visitor.VisitorHomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

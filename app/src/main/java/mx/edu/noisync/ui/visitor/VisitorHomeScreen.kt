@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.theme.visitor
+package mx.edu.noisync.ui.visitor
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
 import mx.edu.noisync.data.fake.FakeSongs
 import mx.edu.noisync.model.Song
-import mx.edu.noisync.ui.theme.components.SongCard
+import mx.edu.noisync.ui.components.SongCard
 
 @Composable
 fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
