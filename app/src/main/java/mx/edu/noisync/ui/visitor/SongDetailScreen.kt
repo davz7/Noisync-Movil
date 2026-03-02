@@ -1,6 +1,7 @@
 package mx.edu.noisync.ui.visitor
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mx.edu.noisync.R
+import mx.edu.noisync.model.Song
 
 @Composable
 fun SongDetailScreen(navController: NavController){
@@ -58,96 +60,112 @@ fun SongDetailScreen(navController: NavController){
                 )
             }
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            shadowElevation = 1.dp,
+            color = Color(0xFFF4F5F6),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(5.dp)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.undefined),
-                contentDescription = "Song Image",
-                modifier = Modifier
-                    .size(70.dp)
-            )
+        ){
             Column(
-                modifier = Modifier
-                    .padding(8.dp)
-            ){
-                Text(
-                    text = "Song name"
-                )
-                Text(
-                    text = "Band name"
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(5.dp)
-                ) {
-                    Text(
-                        text = "Tono: G"
-                    )
-                    Spacer(
-                        modifier = Modifier
-                            .padding(15.dp)
-                    )
-                    Text(
-                        text = "BPM: 120"
-                    )
-                }
-
-            }
-        }
-            Column(
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text(
-                    text = "Transpocicion"
-                )
-                //Botones para modificar tono
                 Row(
-                    horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(5.dp)
                 ) {
                     Image(
-                        painterResource(R.drawable.boton1),
-                        contentDescription = "boton1",
+                        painter = painterResource(R.drawable.undefined),
+                        contentDescription = "Song Image",
                         modifier = Modifier
-                            .size(45.dp)
+                            .size(70.dp)
                     )
-                    Image(
-                        painterResource(R.drawable.boton2),
-                        contentDescription = "boton2",
+                    Column(
                         modifier = Modifier
-                            .size(50.dp)
+                            .padding(8.dp)
+                    ){
+                        Text(
+                            text = "Song name"
+                        )
+                        Text(
+                            text = "Band name"
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(5.dp)
+                        ) {
+                            Text(
+                                text = "Tono: G"
+                            )
+                            Spacer(
+                                modifier = Modifier
+                                    .padding(15.dp)
+                            )
+                            Text(
+                                text = "BPM: 120"
+                            )
+                        }
 
+                    }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Transpocicion"
                     )
-                    Image(
-                        painterResource(R.drawable.boton3),
-                        contentDescription = "boton3",
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .size(45.dp)
-                    )
-                    Image(
-                        painterResource(R.drawable.boton4),
-                        contentDescription = "boton4",
-                        modifier = Modifier
-                            .size(50.dp)
-                    )
-                    Image(
-                        painterResource(
+                            .fillMaxWidth()
+                    ) {
+                        Image(
+                            painterResource(R.drawable.boton1),
+                            contentDescription = "boton1",
+                            modifier = Modifier
+                                .size(45.dp)
+                                .clickable{/* Todo */}
+                        )
+                        Image(
+                            painterResource(R.drawable.boton2),
+                            contentDescription = "boton2",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable{/* Todo */}
+                        )
+                        Image(
+                            painterResource(R.drawable.boton3),
+                            contentDescription = "boton3",
+                            modifier = Modifier
+                                .size(45.dp)
+                                .clickable{/* Todo */}
+                        )
+                        Image(
+                            painterResource(R.drawable.boton4),
+                            contentDescription = "boton4",
+                            modifier = Modifier
+                                .size(50.dp)
+                                .clickable{/* Todo */}
+                        )
+                        Image(
+                            painterResource(
 
-                            R.drawable.boton5),
-                        contentDescription = "boton5",
-                        modifier = Modifier
-                            .size(100.dp)
-                    )
+                                R.drawable.boton5),
+                            contentDescription = "boton5",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clickable{/* Todo */}
+                        )
+                    }
                 }
             }
+        }
         Surface(
             shape = RoundedCornerShape(10.dp),
             shadowElevation = 1.dp,
