@@ -29,13 +29,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import mx.edu.noisync.R
 import mx.edu.noisync.data.fake.FakeSongs
 import mx.edu.noisync.model.Song
 import mx.edu.noisync.ui.components.SongCard
 
 @Composable
-fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
+fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSong: (Song) -> Unit? ){
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -160,11 +161,11 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Usamos la versión de "items" que recibe la lista directamente
                 items(songs) { song ->
-                    SongCard(song = song, onOpen = { onOpenSong(song) })
+                    SongCard(navController, song, onOpen = { onOpenSong(song) })
                 }
             }
         }
@@ -187,15 +188,4 @@ fun VisitorHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit ){
             }
         }
     }
-}
-
-@Preview(showBackground = true, name = "VisitorHomePreview")
-@Composable
-fun VisitorHomeScreenPreview(){
-    VisitorHomeScreen(
-        songs = FakeSongs.publicSongs,
-        onOpenSong = { song ->
-            Log.d("Song", song.title)
-        }
-    )
 }

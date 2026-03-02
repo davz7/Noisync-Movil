@@ -20,14 +20,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import mx.edu.noisync.R
 import mx.edu.noisync.model.Song
+import mx.edu.noisync.ui.navigation.AppsScreens
 
 @Composable
-fun SongCard(song: Song, onOpen: () -> Unit){
+fun SongCard(navController: NavController, song: Song, onOpen: () -> Unit){
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFF2F3F4)
@@ -88,7 +89,7 @@ fun SongCard(song: Song, onOpen: () -> Unit){
                         }
                         Spacer(modifier = Modifier.weight(1f))
                         Surface(
-                            onClick = { /*TODO*/ },
+                            onClick = { navController.navigate(AppsScreens.SongDetailScreen.route) },
                             shape = RoundedCornerShape(10.dp),
                             shadowElevation = 1.dp,
                             color = Color.Black,
@@ -108,12 +109,5 @@ fun SongCard(song: Song, onOpen: () -> Unit){
             }
         }
     }
-}
-
-
-@Preview
-@Composable
-fun SongCardPreview(){
-    SongCard(song = Song(id = "1", title = "Song name", bandName = "Band name", isPublic = true), onOpen = {})
 }
 

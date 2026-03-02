@@ -1,6 +1,7 @@
 package mx.edu.noisync.ui.visitor
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,35 +10,53 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import mx.edu.noisync.R
 
 @Composable
-fun SongDetailScreen(){
+fun SongDetailScreen(navController: NavController){
     Column(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
             .padding(15.dp)
     ){
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                text = "<  Volver",
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            shadowElevation = 1.dp,
+            color = Color(0xFFF4F5F6),
+            onClick = { navController.popBackStack() }
+        ){
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "Volver",
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+                Text(
+                    text = "Volver",
+                    modifier = Modifier
+                        .padding(8.dp)
 
-            )
-
+                )
+            }
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -77,21 +96,73 @@ fun SongDetailScreen(){
                         text = "BPM: 120"
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(5.dp)
-                ) {
-                    //Botones para subir o bajar de tono...
-                }
+
             }
         }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Transpocicion"
+                )
+                //Botones para modificar tono
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Image(
+                        painterResource(R.drawable.boton1),
+                        contentDescription = "boton1",
+                        modifier = Modifier
+                            .size(45.dp)
+                    )
+                    Image(
+                        painterResource(R.drawable.boton2),
+                        contentDescription = "boton2",
+                        modifier = Modifier
+                            .size(50.dp)
 
+                    )
+                    Image(
+                        painterResource(R.drawable.boton3),
+                        contentDescription = "boton3",
+                        modifier = Modifier
+                            .size(45.dp)
+                    )
+                    Image(
+                        painterResource(R.drawable.boton4),
+                        contentDescription = "boton4",
+                        modifier = Modifier
+                            .size(50.dp)
+                    )
+                    Image(
+                        painterResource(
+
+                            R.drawable.boton5),
+                        contentDescription = "boton5",
+                        modifier = Modifier
+                            .size(100.dp)
+                    )
+                }
+            }
+        Surface(
+            shape = RoundedCornerShape(10.dp),
+            shadowElevation = 1.dp,
+            color = Color(246, 247, 248, 255),
+            modifier = Modifier
+                .padding(8.dp)
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+            }
+        }
     }
-}
-
-@Preview(showBackground = true, name = "SongDetailPreview")
-@Composable
-fun SongDetailPreview(){
-    SongDetailScreen()
 }
