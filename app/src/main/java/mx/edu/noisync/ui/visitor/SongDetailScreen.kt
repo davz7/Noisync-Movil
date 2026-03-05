@@ -1,228 +1,142 @@
 package mx.edu.noisync.ui.visitor
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import mx.edu.noisync.R
-import mx.edu.noisync.model.Song
+import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable
-fun SongDetailScreen(navController: NavController){
+fun SongDetailScreen(navController: NavController) {
     Surface(
+        modifier = Modifier.fillMaxSize(),
         color = Color.White,
-    ){
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
                 .padding(15.dp)
-        ){
+        ) {
+            // --- BOTÓN VOLVER ---
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                color = Color.White,
+                color = Color.Transparent, // Mejor transparente para no chocar con el fondo blanco
                 onClick = { navController.popBackStack() }
-            ){
+            ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
+                    modifier = Modifier.padding(vertical = 8.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Volver",
-                        modifier = Modifier
-                            .padding(8.dp)
+                        tint = Color.Black
                     )
-                    Text(
-                        text = "Volver",
-                        modifier = Modifier
-                            .padding(8.dp)
-
-                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Volver", color = Color.Black, fontWeight = FontWeight.Medium)
                 }
             }
+
+            // --- CARD DE INFORMACIÓN DE LA CANCIÓN ---
             Surface(
-                shape = RoundedCornerShape(10.dp),
-                shadowElevation = 1.dp,
+                shape = RoundedCornerShape(16.dp),
+                shadowElevation = 2.dp,
                 color = Color(0xFFF4F5F6),
-                modifier = Modifier
-            ){
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp)
-                    ) {
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
                             painter = painterResource(R.drawable.undefined),
                             contentDescription = "Song Image",
-                            modifier = Modifier
-                                .size(70.dp)
+                            modifier = Modifier.size(70.dp)
                         )
-                        Column(
-                            modifier = Modifier
-                                .padding(8.dp)
-                        ){
-                            Text(
-                                text = "Song name"
-                            )
-                            Text(
-                                text = "Band name"
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .padding(5.dp)
-                            ) {
-                                Text(
-                                    text = "Tono: G"
-                                )
-                                Spacer(
-                                    modifier = Modifier
-                                        .padding(15.dp)
-                                )
-                                Text(
-                                    text = "BPM: 120"
-                                )
+                        Column(modifier = Modifier.padding(start = 12.dp)) {
+                            Text(text = "Song name", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                            Text(text = "Band name", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+                            
+                            Row(modifier = Modifier.padding(top = 4.dp)) {
+                                Text(text = "Tono: G", fontWeight = FontWeight.SemiBold)
+                                Spacer(modifier = Modifier.width(20.dp))
+                                Text(text = "BPM: 120", fontWeight = FontWeight.SemiBold)
                             }
-
                         }
                     }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // --- SECCIÓN DE TRANSPOSICIÓN ---
+                    Text(
+                        text = "Transposición",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(
-                            text = "Transpocicion"
-                        )
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                        // Botones creados desde cero
+                        TransposeButton(text = "-1", subText = "") { /* TODO */ }
+                        TransposeButton(text = "-", subText = "½") { /* TODO */ }
+                        
+                        // Botón de Reset (Central)
+                        Surface(
+                            onClick = { /* TODO */ },
+                            shape = RoundedCornerShape(12.dp),
+                            color = Color.White,
+                            shadowElevation = 1.dp,
+                            modifier = Modifier.size(55.dp)
                         ) {
-                            Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 1.dp,
-                                color = Color(0xFFF4F5F6),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(5.dp))
-                            ){
-                                Image(
-                                    painterResource(R.drawable.boton1),
-                                    contentDescription = "boton1",
-                                    modifier = Modifier
-                                        .size(45.dp)
-                                        .clickable{/* Todo */}
-                                )
-                            }
-                            Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 1.dp,
-                                color = Color(0xFFF4F5F6),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(5.dp))
-                            ){
-                                Image(
-                                    painterResource(R.drawable.boton2),
-                                    contentDescription = "boton2",
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .clickable{/* Todo */}
-                                )
-                            }
-                            Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 1.dp,
-                                color = Color(0xFFF4F5F6),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(5.dp))
-                            ){
-                                Image(
-                                    painterResource(R.drawable.boton3),
-                                    contentDescription = "boton3",
-                                    modifier = Modifier
-                                        .size(45.dp)
-                                        .clickable{/* Todo */}
-                                )
-                            }
-                            Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 1.dp,
-                                color = Color(0xFFF4F5F6),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(5.dp))
-                            ){
-                                Image(
-                                    painterResource(R.drawable.boton4),
-                                    contentDescription = "boton4",
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .clickable{/* Todo */}
-                                )
-                            }
-                            Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 1.dp,
-                                color = Color(0xFFF4F5F6),
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(5.dp))
-                            ){
-                                Image(
-                                    painterResource(R.drawable.boton5),
-                                    contentDescription = "boton5",
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .clip(RoundedCornerShape(5.dp))
-                                        .clickable{/* Todo */}
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = "Reset Icon",
                                 )
                             }
                         }
+
+                        TransposeButton(text = "+", subText = "½") { /* TODO */ }
+                        TransposeButton(text = "+1", subText = "") { /* TODO */ }
                     }
                 }
             }
+
+            // --- LISTA DE NOTAS ---
             Surface(
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(12.dp),
                 shadowElevation = 1.dp,
-                color = Color(246, 247, 248, 255),
+                color = Color(0xFFF6F7F8),
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(top = 15.dp)
                     .weight(1f)
                     .fillMaxWidth()
             ) {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    //Aqui van las Notas de la cancion
-
+                    item { Text("Aquí van las notas de la canción...", color = Color.Gray) }
                 }
             }
         }
