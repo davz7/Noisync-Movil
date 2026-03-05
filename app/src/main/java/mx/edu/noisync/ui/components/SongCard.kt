@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -31,10 +32,11 @@ import mx.edu.noisync.ui.navigation.AppsScreens
 fun SongCard(navController: NavController, song: Song, onOpen: () -> Unit){
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFF2F3F4)
+            containerColor = Color.White,
         ),
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(3.dp, RoundedCornerShape(10.dp))
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
