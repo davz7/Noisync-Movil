@@ -35,10 +35,9 @@ fun SongDetailScreen(navController: NavController) {
                 .systemBarsPadding()
                 .padding(15.dp)
         ) {
-            // --- BOTÓN VOLVER ---
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                color = Color.Transparent, // Mejor transparente para no chocar con el fondo blanco
+                color = Color.Transparent,
                 onClick = { navController.popBackStack() }
             ) {
                 Row(
@@ -54,8 +53,6 @@ fun SongDetailScreen(navController: NavController) {
                     Text(text = "Volver", color = Color.Black, fontWeight = FontWeight.Medium)
                 }
             }
-
-            // --- CARD DE INFORMACIÓN DE LA CANCIÓN ---
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 shadowElevation = 2.dp,
@@ -82,8 +79,6 @@ fun SongDetailScreen(navController: NavController) {
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    // --- SECCIÓN DE TRANSPOSICIÓN ---
                     Text(
                         text = "Transposición",
                         style = MaterialTheme.typography.labelMedium,
@@ -121,8 +116,6 @@ fun SongDetailScreen(navController: NavController) {
                     }
                 }
             }
-
-            // --- LISTA DE NOTAS ---
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 shadowElevation = 1.dp,

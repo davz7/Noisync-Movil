@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import mx.edu.noisync.data.fake.FakeSongs
+import mx.edu.noisync.ui.auth.LoginScreen
+import mx.edu.noisync.ui.navigation.AppsScreens.LoginScreen.route
 import mx.edu.noisync.ui.visitor.SongDetailScreen
 import mx.edu.noisync.ui.visitor.VisitorHomeScreen
 
@@ -26,6 +28,8 @@ fun AppNavigation() {
         composable(route = AppsScreens.SongDetailScreen.route) {
             SongDetailScreen(navController)
         }
-
+        composable(route =  AppsScreens.LoginScreen.route){
+            LoginScreen(navController)
+        }
     }
 }

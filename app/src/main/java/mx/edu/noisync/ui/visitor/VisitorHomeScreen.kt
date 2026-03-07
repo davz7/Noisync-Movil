@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import mx.edu.noisync.R
 import mx.edu.noisync.model.Song
 import mx.edu.noisync.ui.components.SongCard
+import mx.edu.noisync.ui.navigation.AppsScreens
 
 @Composable
 fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSong: (Song) -> Unit? ){
@@ -94,7 +95,7 @@ fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSon
                     ) {
                         DropdownMenuItem(
                             text = { Text("Iniciar sesion") },
-                            onClick = { /*TODO*/ },
+                            onClick = { navController.navigate(AppsScreens.LoginScreen.route) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
