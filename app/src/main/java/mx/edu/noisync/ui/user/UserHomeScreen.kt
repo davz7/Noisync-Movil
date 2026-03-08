@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.visitor
+package mx.edu.noisync.ui.user
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +36,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -45,7 +46,7 @@ import mx.edu.noisync.ui.components.SongCard
 import mx.edu.noisync.ui.navigation.AppsScreens
 
 @Composable
-fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSong: (Song) -> Unit? ){
+fun UserHomeScreen(songs: List<Song>, onOpenSong: (Song) -> Unit? ){
     var expanded by remember { mutableStateOf(false) }
     Surface(
         color = Color.White,
@@ -62,15 +63,12 @@ fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSon
                     .fillMaxWidth()
             ) {
                 Image(
-                    painter = painterResource(R.drawable.logo),
-                    contentDescription = "Logo",
+                    painter = painterResource(R.drawable.undefined),
+                    contentDescription = "Profile Photo",
                     modifier = Modifier
                         .size(40.dp)
                 )
                 Spacer(modifier = Modifier.width(5.dp))
-                Text(
-                    text = "Noisync"
-                )
                 Spacer(modifier = Modifier.weight(1f))
                 Box{
                     Surface(
@@ -95,7 +93,7 @@ fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSon
                     ) {
                         DropdownMenuItem(
                             text = { Text("Iniciar sesion") },
-                            onClick = { navController.navigate(AppsScreens.LoginScreen.route) },
+                            onClick = { /*Todo*/ },
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
@@ -105,19 +103,6 @@ fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSon
                         )
                     }
                 }
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            ) {
-                Text(
-                    text = "Explorar canciones publicas",
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold
-                )
             }
             Surface(
                 shape = RoundedCornerShape(10.dp),
@@ -175,7 +160,19 @@ fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSon
                     color = Color(0xFFF4F5F6)
                 ) {
                     Text(
-                        text = "Recientes",
+                        text = "Publicas",
+                        modifier = Modifier
+                            .padding(10.dp)
+                    )
+                }
+                Surface(
+                    onClick = { /*TODO*/ },
+                    shape = RoundedCornerShape(10.dp),
+                    shadowElevation = 1.dp,
+                    color = Color(0xFFF4F5F6)
+                ) {
+                    Text(
+                        text = "Privadas",
                         modifier = Modifier
                             .padding(10.dp)
                     )
@@ -194,28 +191,12 @@ fun VisitorHomeScreen(navController: NavController, songs: List<Song>, onOpenSon
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(songs) { song ->
-                        SongCard(navController, song, onOpen = { onOpenSong(song) })
+                        //Songs
                     }
-                }
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFF2F3F4),
-                        contentColor = Color.Black,
-                    )
-                ) {
-                    Text(
-                        text = "Cargar mas"
-                    )
                 }
             }
         }
     }
 }
+
+
