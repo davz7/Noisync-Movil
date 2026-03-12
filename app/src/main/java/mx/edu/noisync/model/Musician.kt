@@ -6,6 +6,6 @@ data class Musician(
     val name: String,
     val instrument: String,
     val role: String,
-    val status: String, // "Activo", "Pendiente"
+    val status: String,
     val avatarColor: Long
 )

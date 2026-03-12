@@ -37,24 +37,25 @@ class LoginViewModel : ViewModel() {
                     if (body != null) {
                         _uiState.value = LoginUiState.Success(body)
                     } else {
-                        _uiState.value = LoginUiState.Error("Respuesta del servidor vacía")
+                        _uiState.value = LoginUiState.Error("Respuesta del servidor vacia")
                     }
                 } else {
                     val msg = when (response.code()) {
-                        401 -> "Credenciales incorrectas"
-                        403 -> "Cuenta no verificada"
+                        401 -> "Correo o contrasena incorrectos, intenta de nuevo"
+                        403 -> "Debes confirmar tu correo para continuar"
                         404 -> "Usuario no encontrado"
+                        423, 429 -> "Acceso bloqueado temporalmente, intenta mas tarde"
                         500 -> "Error del servidor"
                         else -> "Error ${response.code()}"
                     }
                     _uiState.value = LoginUiState.Error(msg)
                 }
             } catch (e: Exception) {
-                _uiState.value = LoginUiState.Error("Sin conexión al servidor")
+                _uiState.value = LoginUiState.Error("Sin conexion al servidor")
             }
         }
     }
-    
+
     fun resetState() {
         _uiState.value = LoginUiState.Idle
     }

@@ -2,7 +2,13 @@ package mx.edu.noisync.data.fake
 
 import mx.edu.noisync.model.Song
 
-object FakeSongs{
+data class SongPreviewDetails(
+    val tone: String,
+    val bpm: String,
+    val lines: List<String>
+)
+
+object FakeSongs {
     val publicSongs = listOf(
         Song(id = "1", title = "Master Of Puppets - Remastered", bandName = "Metallica", isPublic = true),
         Song(id = "2", title = "Nobody - from Kaiju No. 8", bandName = "OneRepublic", isPublic = true),
@@ -13,6 +19,58 @@ object FakeSongs{
         Song(id = "7", title = "...And to Those I Love, Thanks for Sticking Around", bandName = "Suicideboy", isPublic = true),
         Song(id = "8", title = "All Star", bandName = "Smash Mouth", isPublic = true),
         Song(id = "9", title = "I Wanna Be Your Dog", bandName = "Joan Jett & the Blackhearts", isPublic = true),
-        Song(id = "10", title = "Snakes (from the series Arcane)", bandName = "MIYAVI, PVRIS, Arcane, League of Legends", isPublic = true),
+        Song(id = "10", title = "Snakes (from the series Arcane)", bandName = "MIYAVI, PVRIS, Arcane, League of Legends", isPublic = true)
     )
+
+    val privateBandSongs = listOf(
+        Song(id = "11", title = "Ensayo de apertura", bandName = "Los Nocturnos", isPublic = false),
+        Song(id = "12", title = "Balada de medianoche", bandName = "Los Nocturnos", isPublic = false),
+        Song(id = "13", title = "Puente final", bandName = "Los Nocturnos", isPublic = false)
+    )
+
+    val accessibleSongs = publicSongs + privateBandSongs
+    private val allSongsById = accessibleSongs.associateBy(Song::id)
+
+    private val detailsBySongId = mapOf(
+        "1" to SongPreviewDetails(
+            tone = "G",
+            bpm = "120",
+            lines = listOf(
+                "[Verso]",
+                "End of passion play, crumbling away",
+                "I'm your source of self-destruction"
+            )
+        ),
+        "11" to SongPreviewDetails(
+            tone = "D",
+            bpm = "98",
+            lines = listOf(
+                "[Verso 1]",
+                "Luces bajas, cuenta atras, entra la voz",
+                "[Coro]",
+                "Sigue el pulso hasta el final"
+            )
+        ),
+        "12" to SongPreviewDetails(
+            tone = "Bb",
+            bpm = "76",
+            lines = listOf(
+                "[Verso]",
+                "Todo cae lento cuando empieza el son",
+                "[Puente]",
+                "Sube una vez mas y vuelve al compas"
+            )
+        )
+    )
+
+    fun findSongById(songId: String?): Song? = songId?.let(allSongsById::get)
+
+    fun getPreviewDetails(songId: String?): SongPreviewDetails {
+        return detailsBySongId[songId]
+            ?: SongPreviewDetails(
+                tone = "--",
+                bpm = "--",
+                lines = listOf("La letra de esta cancion estara disponible cuando conectemos el backend.")
+            )
+    }
 }

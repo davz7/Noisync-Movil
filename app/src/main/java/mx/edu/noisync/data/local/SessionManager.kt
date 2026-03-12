@@ -45,6 +45,12 @@ class SessionManager(context: Context) {
     fun mustChangePassword(): Boolean {
         return prefs.getBoolean(KEY_MUST_CHANGE_PASSWORD, false)
     }
+
+    fun setMustChangePassword(required: Boolean) {
+        prefs.edit()
+            .putBoolean(KEY_MUST_CHANGE_PASSWORD, required)
+            .apply()
+    }
     
     fun isLoggedIn(): Boolean {
         return getAccessToken() != null

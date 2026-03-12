@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.login
+package mx.edu.noisync.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,15 +15,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,15 +36,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
-import mx.edu.noisync.ui.auth.ChangePasswordActivity
+import mx.edu.noisync.ui.login.LoginActivity
 import mx.edu.noisync.ui.theme.NoisyncTheme
 
-class LoginActivity : ComponentActivity() {
-    private val viewModel: LoginViewModel by viewModels()
+class ChangePasswordActivity : ComponentActivity() {
+    private val viewModel: ChangePasswordViewModel by viewModels()
     private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,41 +51,46 @@ class LoginActivity : ComponentActivity() {
 
         sessionManager = SessionManager(this)
 
-        if (sessionManager.isLoggedIn()) {
-            routeFromSession()
+        if (!sessionManager.isLoggedIn()) {
+            goToLogin()
+            return
+        }
+
+        if (!sessionManager.mustChangePassword()) {
+            goToHome()
             return
         }
 
         setContent {
             NoisyncTheme {
-                LoginScreen()
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                when (state) {
-                    is LoginUiState.Idle -> Unit
-                    is LoginUiState.Loading -> Unit
-                    is LoginUiState.Success -> {
-                        sessionManager.saveSession(state.data)
-                        routeFromSession()
+                ChangePasswordScreen(
+                    viewModel = viewModel,
+                    onLogout = {
+                        sessionManager.clearSession()
+                        goToLogin()
                     }
-
-                    is LoginUiState.Error -> {
-                        Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                }
+                )
             }
         }
     }
 
     @Composable
-    private fun LoginScreen() {
-        var identifier by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+    private fun ChangePasswordScreen(
+        viewModel: ChangePasswordViewModel,
+        onLogout: () -> Unit
+    ) {
+        var currentPassword by remember { mutableStateOf("") }
+        var newPassword by remember { mutableStateOf("") }
+        var confirmPassword by remember { mutableStateOf("") }
         val uiState by viewModel.uiState.collectAsState()
-        val isLoading = uiState is LoginUiState.Loading
+        val errorMessage = (uiState as? ChangePasswordUiState.Error)?.message
+
+        LaunchedEffect(errorMessage) {
+            if (errorMessage != null) {
+                Toast.makeText(this@ChangePasswordActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                viewModel.resetState()
+            }
+        }
 
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -113,13 +115,13 @@ class LoginActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.weight(1f))
 
                         Text(
-                            text = "Iniciar sesion",
+                            text = "Cambiar contrasena",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = "Accede a tu cuenta Noisync",
+                            text = "Debes actualizar tu contrasena temporal para continuar",
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -128,37 +130,54 @@ class LoginActivity : ComponentActivity() {
 
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
-                                text = "Correo o usuario",
+                                text = "Contrasena actual",
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 14.sp
                             )
 
                             OutlinedTextField(
-                                value = identifier,
-                                onValueChange = { identifier = it },
-                                placeholder = { Text("usuario o tu@email.com") },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                                value = currentPassword,
+                                onValueChange = { currentPassword = it },
+                                placeholder = { Text("Ingresa tu contrasena temporal") },
+                                visualTransformation = PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
-                                enabled = !isLoading,
                                 shape = RoundedCornerShape(10.dp)
                             )
 
                             Spacer(modifier = Modifier.padding(8.dp))
 
                             Text(
-                                text = "Contrasena",
+                                text = "Nueva contrasena",
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 14.sp
                             )
 
                             OutlinedTextField(
-                                value = password,
-                                onValueChange = { password = it },
-                                placeholder = { Text("Ingresa contrasena") },
+                                value = newPassword,
+                                onValueChange = { newPassword = it },
+                                placeholder = { Text("Ingresa una contrasena nueva") },
                                 visualTransformation = PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
-                                enabled = !isLoading,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+
+                            Spacer(modifier = Modifier.padding(8.dp))
+
+                            Text(
+                                text = "Confirmar contrasena",
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 14.sp
+                            )
+
+                            OutlinedTextField(
+                                value = confirmPassword,
+                                onValueChange = { confirmPassword = it },
+                                placeholder = { Text("Repite tu nueva contrasena") },
+                                visualTransformation = PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                                modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(10.dp)
                             )
 
@@ -166,13 +185,15 @@ class LoginActivity : ComponentActivity() {
 
                             Surface(
                                 onClick = {
-                                    if (!isLoading) {
-                                        viewModel.login(identifier, password)
-                                    }
+                                    viewModel.submit(
+                                        currentPassword = currentPassword,
+                                        newPassword = newPassword,
+                                        confirmPassword = confirmPassword
+                                    )
                                 },
                                 shape = RoundedCornerShape(10.dp),
                                 shadowElevation = 1.dp,
-                                color = if (isLoading) Color.Gray else Color(0xFF212529),
+                                color = Color(0xFF212529),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .animateContentSize()
@@ -181,54 +202,44 @@ class LoginActivity : ComponentActivity() {
                                     horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier.padding(15.dp)
                                 ) {
-                                    if (isLoading) {
-                                        CircularProgressIndicator(
-                                            modifier = Modifier.size(20.dp),
-                                            color = Color.White,
-                                            strokeWidth = 2.dp
-                                        )
-                                        Spacer(modifier = Modifier.padding(6.dp))
-                                        Text(
-                                            text = "Cargando...",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color.White
-                                        )
-                                    } else {
-                                        Text(
-                                            text = "Entrar",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color.White
-                                        )
-                                    }
+                                    Text(
+                                        text = "Actualizar contrasena",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.padding(8.dp))
+
+                            Surface(
+                                onClick = onLogout,
+                                shape = RoundedCornerShape(10.dp),
+                                shadowElevation = 1.dp,
+                                color = Color(0xFFF8F9FA),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateContentSize()
+                            ) {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier.padding(15.dp)
+                                ) {
+                                    Text(
+                                        text = "Cerrar sesion",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.Black
+                                    )
                                 }
                             }
                         }
 
-                        Spacer(modifier = Modifier.padding(12.dp))
-                        Text(
-                            text = "Olvidaste tu contrasena?",
-                            color = Color.Gray,
-                            fontSize = 13.sp
-                        )
-                        Text(
-                            text = "No tienes una cuenta? Registrate",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 13.sp
-                        )
                         Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }
-        }
-    }
-
-    private fun routeFromSession() {
-        if (sessionManager.mustChangePassword()) {
-            goToChangePassword()
-        } else {
-            goToHome()
         }
     }
 
@@ -239,8 +250,8 @@ class LoginActivity : ComponentActivity() {
         finish()
     }
 
-    private fun goToChangePassword() {
-        val intent = Intent(this, ChangePasswordActivity::class.java)
+    private fun goToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

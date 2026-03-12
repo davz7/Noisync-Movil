@@ -1,5 +1,6 @@
 package mx.edu.noisync.ui.user
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -25,22 +26,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import mx.edu.noisync.MainActivity
+import mx.edu.noisync.data.local.SessionManager
 
 @Composable
 fun UserInfo(navController: NavController) {
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
             .background(Color.White)
     ) {
-        // --- BOTÓN VOLVER ---
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -48,7 +54,7 @@ fun UserInfo(navController: NavController) {
         ) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = Color.Transparent, // Fondo transparente como solicitaste
+                color = Color.Transparent,
                 onClick = { navController.popBackStack() }
             ) {
                 Row(
@@ -56,7 +62,7 @@ fun UserInfo(navController: NavController) {
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Volver",
                         tint = Color.Black,
                         modifier = Modifier.size(20.dp)
@@ -72,7 +78,6 @@ fun UserInfo(navController: NavController) {
             }
         }
 
-        // --- HEADER ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -93,7 +98,6 @@ fun UserInfo(navController: NavController) {
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Avatar con Iniciales
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -110,7 +114,6 @@ fun UserInfo(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nombre del Usuario
             Text(
                 text = "Juan Delgado",
                 fontSize = 24.sp,
@@ -118,9 +121,8 @@ fun UserInfo(navController: NavController) {
                 color = Color.Black
             )
 
-            // Rol y Banda
             Text(
-                text = "Líder • Los Nocturnos",
+                text = "Lider • Los Nocturnos",
                 fontSize = 14.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 4.dp)
@@ -130,7 +132,6 @@ fun UserInfo(navController: NavController) {
             HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Detalles de Información - Correo
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,7 +139,7 @@ fun UserInfo(navController: NavController) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Correo electrónico",
+                    text = "Correo electronico",
                     color = Color.Gray,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
@@ -152,7 +153,6 @@ fun UserInfo(navController: NavController) {
                 )
             }
 
-            // Detalles de Información - Rol
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,7 +166,7 @@ fun UserInfo(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "Líder",
+                    text = "Lider",
                     fontSize = 16.sp,
                     color = Color.Black,
                     modifier = Modifier.padding(top = 4.dp),
@@ -174,7 +174,6 @@ fun UserInfo(navController: NavController) {
                 )
             }
 
-            // Detalles de Información - Banda
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,9 +199,13 @@ fun UserInfo(navController: NavController) {
             HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón Cerrar Sesión
             Surface(
-                onClick = { /* TODO: Implementar logout */ },
+                onClick = {
+                    sessionManager.clearSession()
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -215,7 +218,7 @@ fun UserInfo(navController: NavController) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Cerrar sesión",
+                        text = "Cerrar sesion",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = Color.Black
