@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
+import mx.edu.noisync.data.network.RetrofitClient
 import mx.edu.noisync.ui.login.LoginActivity
 import mx.edu.noisync.ui.theme.NoisyncTheme
 
@@ -48,6 +50,7 @@ class ChangePasswordActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        RetrofitClient.init(applicationContext)
 
         sessionManager = SessionManager(this)
 
@@ -84,11 +87,21 @@ class ChangePasswordActivity : ComponentActivity() {
         var confirmPassword by remember { mutableStateOf("") }
         val uiState by viewModel.uiState.collectAsState()
         val errorMessage = (uiState as? ChangePasswordUiState.Error)?.message
+        val successMessage = (uiState as? ChangePasswordUiState.Success)?.message
+        val isLoading = uiState is ChangePasswordUiState.Loading
 
         LaunchedEffect(errorMessage) {
             if (errorMessage != null) {
                 Toast.makeText(this@ChangePasswordActivity, errorMessage, Toast.LENGTH_SHORT).show()
                 viewModel.resetState()
+            }
+        }
+
+        LaunchedEffect(successMessage) {
+            if (successMessage != null) {
+                sessionManager.setMustChangePassword(false)
+                Toast.makeText(this@ChangePasswordActivity, successMessage, Toast.LENGTH_SHORT).show()
+                goToHome()
             }
         }
 
@@ -142,6 +155,7 @@ class ChangePasswordActivity : ComponentActivity() {
                                 visualTransformation = PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
+                                enabled = !isLoading,
                                 shape = RoundedCornerShape(10.dp)
                             )
 
@@ -160,6 +174,7 @@ class ChangePasswordActivity : ComponentActivity() {
                                 visualTransformation = PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
+                                enabled = !isLoading,
                                 shape = RoundedCornerShape(10.dp)
                             )
 
@@ -178,6 +193,7 @@ class ChangePasswordActivity : ComponentActivity() {
                                 visualTransformation = PasswordVisualTransformation(),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
+                                enabled = !isLoading,
                                 shape = RoundedCornerShape(10.dp)
                             )
 
@@ -185,15 +201,17 @@ class ChangePasswordActivity : ComponentActivity() {
 
                             Surface(
                                 onClick = {
-                                    viewModel.submit(
-                                        currentPassword = currentPassword,
-                                        newPassword = newPassword,
-                                        confirmPassword = confirmPassword
-                                    )
+                                    if (!isLoading) {
+                                        viewModel.submit(
+                                            currentPassword = currentPassword,
+                                            newPassword = newPassword,
+                                            confirmPassword = confirmPassword
+                                        )
+                                    }
                                 },
                                 shape = RoundedCornerShape(10.dp),
                                 shadowElevation = 1.dp,
-                                color = Color(0xFF212529),
+                                color = if (isLoading) Color.Gray else Color(0xFF212529),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .animateContentSize()
@@ -202,12 +220,26 @@ class ChangePasswordActivity : ComponentActivity() {
                                     horizontalArrangement = Arrangement.Center,
                                     modifier = Modifier.padding(15.dp)
                                 ) {
-                                    Text(
-                                        text = "Actualizar contrasena",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 16.sp,
-                                        color = Color.White
-                                    )
+                                    if (isLoading) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.padding(end = 8.dp),
+                                            color = Color.White,
+                                            strokeWidth = 2.dp
+                                        )
+                                        Text(
+                                            text = "Actualizando...",
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = Color.White
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "Actualizar contrasena",
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = Color.White
+                                        )
+                                    }
                                 }
                             }
 

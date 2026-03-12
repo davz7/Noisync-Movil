@@ -41,10 +41,9 @@ class LoginViewModel : ViewModel() {
                     }
                 } else {
                     val msg = when (response.code()) {
-                        401 -> "Correo o contrasena incorrectos, intenta de nuevo"
-                        403 -> "Debes confirmar tu correo para continuar"
-                        404 -> "Usuario no encontrado"
-                        423, 429 -> "Acceso bloqueado temporalmente, intenta mas tarde"
+                        400 -> "Debes verificar tu correo antes de iniciar sesion"
+                        401 -> "Credenciales invalidas"
+                        423 -> "Cuenta bloqueada temporalmente. Intenta mas tarde."
                         500 -> "Error del servidor"
                         else -> "Error ${response.code()}"
                     }

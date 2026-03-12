@@ -36,13 +36,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
-import mx.edu.noisync.model.Song
+import mx.edu.noisync.model.SongListItem
 import mx.edu.noisync.ui.components.SongCard
 
 @Composable
 fun UserHomeScreen(
-    songs: List<Song>,
-    onOpenSong: (Song) -> Unit?,
+    songs: List<SongListItem>,
+    onOpenSong: (SongListItem) -> Unit?,
     onOpenProfile: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }

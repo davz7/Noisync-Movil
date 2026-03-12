@@ -7,7 +7,8 @@ data class LoginRequest(
 
 data class ChangePasswordRequest(
     val currentPassword: String,
-    val newPassword: String
+    val newPassword: String,
+    val confirmPassword: String
 )
 
 data class LoginResponse(
@@ -19,16 +20,22 @@ data class LoginResponse(
     val mustChangePassword: Boolean
 )
 
-enum class UserRole {
-    VISITOR,
-    MUSICIAN,
-    LEADER
-}
+data class ChangePasswordResponse(
+    val ok: Boolean,
+    val message: String
+)
 
-data class User(
-    val id: String,
-    val email: String,
-    val name: String,
-    val role: UserRole,
-    val bandId: String?
+data class UserProfile(
+    val userId: Long,
+    val bandId: Long?,
+    val role: String,
+    val username: String?,
+    val fullName: String?,
+    val email: String?,
+    val phone: String?,
+    val status: String?,
+    val firstLogin: Int?,
+    val active: Int?,
+    val bandName: String?,
+    val bandDescription: String?
 )

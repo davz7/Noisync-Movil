@@ -41,6 +41,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
+import mx.edu.noisync.data.network.RetrofitClient
 import mx.edu.noisync.ui.auth.ChangePasswordActivity
 import mx.edu.noisync.ui.theme.NoisyncTheme
 
@@ -51,6 +52,7 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        RetrofitClient.init(applicationContext)
 
         sessionManager = SessionManager(this)
 

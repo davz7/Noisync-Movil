@@ -24,10 +24,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
-import mx.edu.noisync.model.Song
+import mx.edu.noisync.model.SongListItem
 
 @Composable
-fun SongCard(song: Song, onOpen: () -> Unit) {
+fun SongCard(song: SongListItem, onOpen: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -61,7 +61,7 @@ fun SongCard(song: Song, onOpen: () -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = song.bandName,
+                    text = song.artistName,
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -81,8 +81,7 @@ fun SongCard(song: Song, onOpen: () -> Unit) {
                             text = if (song.isPublic) "Publica" else "Privada",
                             fontSize = 12.sp,
                             color = if (song.isPublic) Color(0xFF006400) else Color(0xFF6B21A8),
-                            modifier = Modifier
-                                .padding(5.dp)
+                            modifier = Modifier.padding(5.dp)
                         )
                     }
                     Spacer(modifier = Modifier.weight(1f))
@@ -99,8 +98,7 @@ fun SongCard(song: Song, onOpen: () -> Unit) {
                             text = "Abrir",
                             fontSize = 12.sp,
                             color = Color.White,
-                            modifier = Modifier
-                                .padding(5.dp)
+                            modifier = Modifier.padding(5.dp)
                         )
                     }
                 }

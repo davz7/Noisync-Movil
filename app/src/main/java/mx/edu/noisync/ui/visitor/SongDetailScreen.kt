@@ -36,8 +36,7 @@ import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable
 fun SongDetailScreen(navController: NavController, songId: String?) {
-    val song = FakeSongs.findSongById(songId)
-    val previewDetails = FakeSongs.getPreviewDetails(songId)
+    val song = FakeSongs.getSongDetail(songId)
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -82,20 +81,25 @@ fun SongDetailScreen(navController: NavController, songId: String?) {
                         )
                         Column(modifier = Modifier.padding(start = 12.dp)) {
                             Text(
-                                text = song?.title ?: "Cancion no disponible",
+                                text = song.title,
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = song?.bandName ?: "Sin banda",
+                                text = song.artistName,
                                 style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray
+                            )
+                            Text(
+                                text = song.bandName ?: "Sin banda",
+                                style = MaterialTheme.typography.bodySmall,
                                 color = Color.Gray
                             )
 
                             Row(modifier = Modifier.padding(top = 4.dp)) {
-                                Text(text = "Tono: ${previewDetails.tone}", fontWeight = FontWeight.SemiBold)
+                                Text(text = "Tono: ${song.originalKey}", fontWeight = FontWeight.SemiBold)
                                 Spacer(modifier = Modifier.width(20.dp))
-                                Text(text = "BPM: ${previewDetails.bpm}", fontWeight = FontWeight.SemiBold)
+                                Text(text = "BPM: ${song.bpm}", fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -149,10 +153,22 @@ fun SongDetailScreen(navController: NavController, songId: String?) {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(previewDetails.lines) { line ->
-                        Text(text = line, color = Color.Gray)
+                    items(song.sections) { section ->
+                        Column {
+                            Text(
+                                text = section.title,
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Black,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+
+                            section.lines.forEach { line ->
+                                Text(text = line, color = Color.Gray)
+                            }
+                        }
                     }
                 }
             }
