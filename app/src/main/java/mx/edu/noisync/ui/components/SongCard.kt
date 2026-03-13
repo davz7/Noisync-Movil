@@ -23,16 +23,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import mx.edu.noisync.R
-import mx.edu.noisync.model.Song
-import mx.edu.noisync.ui.navigation.AppsScreens
+import mx.edu.noisync.model.SongListItem
 
 @Composable
-fun SongCard(navController: NavController, song: Song, onOpen: () -> Unit){
+fun SongCard(song: SongListItem, onOpen: () -> Unit) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = Color.White
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -43,7 +41,7 @@ fun SongCard(navController: NavController, song: Song, onOpen: () -> Unit){
             modifier = Modifier
                 .padding(8.dp)
                 .fillMaxWidth()
-        ){
+        ) {
             Image(
                 painter = painterResource(R.drawable.undefined),
                 contentDescription = "Song Image",
@@ -63,53 +61,48 @@ fun SongCard(navController: NavController, song: Song, onOpen: () -> Unit){
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = song.bandName,
+                    text = song.artistName,
                     fontSize = 12.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = if (song.isPublic) Color(0xFFDFF5E1) else Color(0xFFF3E8FF),
+                        modifier = Modifier
+                            .animateContentSize()
+                            .padding(1.dp)
                     ) {
-                        if (song.isPublic){
-                            Surface(
-                                shape = RoundedCornerShape(10.dp),
-                                shadowElevation = 1.dp,
-                                color = Color(0xFFDFF5E1),
-                                modifier = Modifier
-                                    .animateContentSize()
-                                    .padding(1.dp)
-                            ) {
-                                Text(
-                                    text = "Publica",
-                                    fontSize = 12.sp,
-                                    color = Color(0xFF006400),
-                                    modifier = Modifier
-                                        .padding(5.dp)
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        Surface(
-                            onClick = { navController.navigate(AppsScreens.SongDetailScreen.route) },
-                            shape = RoundedCornerShape(10.dp),
-                            shadowElevation = 1.dp,
-                            color = Color.Black,
-                            modifier = Modifier
-                                .animateContentSize()
-                                .padding(1.dp)
-                        ) {
-                            Text(
-                                text = "Abrir",
-                                fontSize = 12.sp,
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(5.dp)
-                            )
-                        }
+                        Text(
+                            text = if (song.isPublic) "Publica" else "Privada",
+                            fontSize = 12.sp,
+                            color = if (song.isPublic) Color(0xFF006400) else Color(0xFF6B21A8),
+                            modifier = Modifier.padding(5.dp)
+                        )
                     }
+                    Spacer(modifier = Modifier.weight(1f))
+                    Surface(
+                        onClick = onOpen,
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = Color.Black,
+                        modifier = Modifier
+                            .animateContentSize()
+                            .padding(1.dp)
+                    ) {
+                        Text(
+                            text = "Abrir",
+                            fontSize = 12.sp,
+                            color = Color.White,
+                            modifier = Modifier.padding(5.dp)
+                        )
+                    }
+                }
             }
         }
     }
 }
-

@@ -1,5 +1,7 @@
 package mx.edu.noisync.ui.user
 
+import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,39 +18,85 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import mx.edu.noisync.MainActivity
+import mx.edu.noisync.data.local.SessionManager
+import mx.edu.noisync.data.model.UserProfile
 
 @Composable
 fun UserInfo(navController: NavController) {
+    val context = LocalContext.current
+    val sessionManager = SessionManager(context)
+    val viewModel: UserInfoViewModel = viewModel()
+    val uiState by viewModel.uiState.collectAsState()
+    val profile = (uiState as? UserInfoUiState.Success)?.profile
+    val errorMessage = (uiState as? UserInfoUiState.Error)?.message
+
+    LaunchedEffect(errorMessage) {
+        if (errorMessage != null) {
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    UserInfoContent(
+        navController = navController,
+        sessionManager = sessionManager,
+        displayName = profile.displayName(),
+        displayRole = profile.roleLabel(sessionManager.getRole()),
+        displayBand = profile?.bandName ?: "Sin banda",
+        displayEmail = profile?.email ?: "No disponible"
+    )
+}
+
+@Composable
+private fun UserInfoContent(
+    navController: NavController,
+    sessionManager: SessionManager,
+    displayName: String,
+    displayRole: String,
+    displayBand: String,
+    displayEmail: String
+) {
+    val context = LocalContext.current
+    val initials = displayName
+        .split(" ")
+        .filter { it.isNotBlank() }
+        .take(2)
+        .joinToString("") { it.take(1).uppercase() }
+        .ifBlank { "NS" }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
             .background(Color.White)
     ) {
-        // --- BOTÓN VOLVER ---
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(horizontal = 15.dp, vertical = 10.dp)
+            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
         ) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = Color.Transparent, // Fondo transparente como solicitaste
+                color = Color.Transparent,
                 onClick = { navController.popBackStack() }
             ) {
                 Row(
@@ -56,7 +104,7 @@ fun UserInfo(navController: NavController) {
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Volver",
                         tint = Color.Black,
                         modifier = Modifier.size(20.dp)
@@ -72,7 +120,6 @@ fun UserInfo(navController: NavController) {
             }
         }
 
-        // --- HEADER ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -93,7 +140,6 @@ fun UserInfo(navController: NavController) {
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Avatar con Iniciales
             Box(
                 modifier = Modifier
                     .size(100.dp)
@@ -101,7 +147,7 @@ fun UserInfo(navController: NavController) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "JD",
+                    text = initials,
                     color = Color.White,
                     fontSize = 36.sp,
                     fontWeight = FontWeight.Bold
@@ -110,17 +156,15 @@ fun UserInfo(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Nombre del Usuario
             Text(
-                text = "Juan Delgado",
+                text = displayName,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
 
-            // Rol y Banda
             Text(
-                text = "Líder • Los Nocturnos",
+                text = "$displayRole | $displayBand",
                 fontSize = 14.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 4.dp)
@@ -130,7 +174,6 @@ fun UserInfo(navController: NavController) {
             HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Detalles de Información - Correo
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -138,13 +181,13 @@ fun UserInfo(navController: NavController) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = "Correo electrónico",
+                    text = "Correo electronico",
                     color = Color.Gray,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "juan.delgado@example.com",
+                    text = displayEmail,
                     fontSize = 16.sp,
                     color = Color.Black,
                     modifier = Modifier.padding(top = 4.dp),
@@ -152,7 +195,6 @@ fun UserInfo(navController: NavController) {
                 )
             }
 
-            // Detalles de Información - Rol
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,7 +208,7 @@ fun UserInfo(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "Líder",
+                    text = displayRole,
                     fontSize = 16.sp,
                     color = Color.Black,
                     modifier = Modifier.padding(top = 4.dp),
@@ -174,7 +216,6 @@ fun UserInfo(navController: NavController) {
                 )
             }
 
-            // Detalles de Información - Banda
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -188,7 +229,7 @@ fun UserInfo(navController: NavController) {
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "Los Nocturnos",
+                    text = displayBand,
                     fontSize = 16.sp,
                     color = Color.Black,
                     modifier = Modifier.padding(top = 4.dp),
@@ -200,9 +241,13 @@ fun UserInfo(navController: NavController) {
             HorizontalDivider(color = Color(0xFFF1F5F9), thickness = 1.dp)
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Botón Cerrar Sesión
             Surface(
-                onClick = { /* TODO: Implementar logout */ },
+                onClick = {
+                    sessionManager.clearSession()
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    context.startActivity(intent)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -215,7 +260,7 @@ fun UserInfo(navController: NavController) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Cerrar sesión",
+                        text = "Cerrar sesion",
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         color = Color.Black
@@ -229,5 +274,28 @@ fun UserInfo(navController: NavController) {
 @Preview(showBackground = true)
 @Composable
 fun UserInfoPreview() {
-    UserInfo(rememberNavController())
+    UserInfoContent(
+        navController = rememberNavController(),
+        sessionManager = SessionManager(LocalContext.current),
+        displayName = "Juan Delgado",
+        displayRole = "Lider",
+        displayBand = "Los Nocturnos",
+        displayEmail = "juan.delgado@example.com"
+    )
+}
+
+private fun UserProfile?.displayName(): String {
+    return this?.fullName
+        ?.takeIf { it.isNotBlank() }
+        ?: this?.username?.takeIf { it.isNotBlank() }
+        ?: "Usuario Noisync"
+}
+
+private fun UserProfile?.roleLabel(sessionRole: String?): String {
+    val role = this?.role ?: sessionRole
+    return when (role?.uppercase()) {
+        "LEADER" -> "Lider"
+        "MUSICIAN" -> "Musico"
+        else -> "Usuario"
+    }
 }

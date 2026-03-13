@@ -18,7 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -45,7 +45,6 @@ fun UserInstrumentsScreen(navController: NavController) {
             .systemBarsPadding()
             .background(Color.White)
     ) {
-        // --- BOTÓN VOLVER ---
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -53,7 +52,7 @@ fun UserInstrumentsScreen(navController: NavController) {
         ) {
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                color = Color.Transparent, // Fondo transparente
+                color = Color.Transparent,
                 onClick = { navController.popBackStack() }
             ) {
                 Row(
@@ -61,7 +60,7 @@ fun UserInstrumentsScreen(navController: NavController) {
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Volver",
                         tint = Color.Black,
                         modifier = Modifier.size(20.dp)
@@ -77,7 +76,6 @@ fun UserInstrumentsScreen(navController: NavController) {
             }
         }
 
-        // --- HEADER ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -92,7 +90,6 @@ fun UserInstrumentsScreen(navController: NavController) {
             )
         }
 
-        // --- LISTA DE INSTRUMENTOS ---
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -138,7 +135,7 @@ fun UserInstrumentsScreen(navController: NavController) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "${instrument.musiciansCount} músicos asignados",
+                                text = "${instrument.musiciansCount} musicos asignados",
                                 fontSize = 13.sp,
                                 color = Color.Gray
                             )

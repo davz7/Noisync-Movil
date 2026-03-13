@@ -18,7 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,7 +47,6 @@ fun UserTeamScreen(navController: NavController) {
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            // --- BOTÓN VOLVER ---
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -55,7 +54,7 @@ fun UserTeamScreen(navController: NavController) {
             ) {
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = Color.Transparent, // Fondo transparente como solicitaste
+                    color = Color.Transparent,
                     onClick = { navController.popBackStack() }
                 ) {
                     Row(
@@ -63,7 +62,7 @@ fun UserTeamScreen(navController: NavController) {
                         modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Volver",
                             tint = Color.Black,
                             modifier = Modifier.size(20.dp)
@@ -79,7 +78,6 @@ fun UserTeamScreen(navController: NavController) {
                 }
             }
 
-            // --- HEADER ---
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -87,14 +85,13 @@ fun UserTeamScreen(navController: NavController) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Músicos",
+                    text = "Musicos",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
             }
 
-            // --- LISTA DE MÚSICOS ---
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -114,7 +111,6 @@ fun UserTeamScreen(navController: NavController) {
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Avatar circular con iniciales
                             Box(
                                 modifier = Modifier
                                     .size(56.dp)
@@ -131,7 +127,6 @@ fun UserTeamScreen(navController: NavController) {
 
                             Spacer(modifier = Modifier.width(16.dp))
 
-                            // Información: Nombre, Instrumento y Rol
                             Column(
                                 modifier = Modifier.weight(1f)
                             ) {
@@ -160,7 +155,6 @@ fun UserTeamScreen(navController: NavController) {
                                 }
                             }
 
-                            // Badge de Estado (Activo/Pendiente)
                             val (badgeBgColor, badgeTextColor) = when (musician.status) {
                                 "Activo" -> Color(0xFFD1FAE5) to Color(0xFF059669)
                                 else -> Color(0xFFFEF3C7) to Color(0xFFD97706)
@@ -181,8 +175,7 @@ fun UserTeamScreen(navController: NavController) {
                         }
                     }
                 }
-                
-                // Espacio al final de la lista
+
                 item { Spacer(modifier = Modifier.height(20.dp)) }
             }
         }
