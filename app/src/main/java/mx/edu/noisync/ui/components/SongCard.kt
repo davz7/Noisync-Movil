@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.data.model.SongListItem
 
 @Composable
 fun SongCard(song: SongListItem, onOpen: () -> Unit) {

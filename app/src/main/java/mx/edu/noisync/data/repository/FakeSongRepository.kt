@@ -1,8 +1,8 @@
 package mx.edu.noisync.data.repository
 
-import mx.edu.noisync.data.fake.FakeSongs
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.fake.FakeSongs
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
 
 class FakeSongRepository : SongRepository {
     override suspend fun getVisibleSongs(

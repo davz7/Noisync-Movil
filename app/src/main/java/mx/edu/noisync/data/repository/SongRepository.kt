@@ -1,7 +1,7 @@
 package mx.edu.noisync.data.repository
 
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
 
 data class PageResult<T>(
     val content: List<T>,

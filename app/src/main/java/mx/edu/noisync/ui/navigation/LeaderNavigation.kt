@@ -6,7 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import mx.edu.noisync.data.fake.FakeSongs
+import mx.edu.noisync.fake.FakeSongs
 import mx.edu.noisync.ui.user.UserHomeScreen
 import mx.edu.noisync.ui.user.UserInfo
 import mx.edu.noisync.ui.user.UserInstrumentsScreen

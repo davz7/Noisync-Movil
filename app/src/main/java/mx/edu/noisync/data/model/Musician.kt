@@ -1,6 +1,6 @@
-package mx.edu.noisync.model
+package mx.edu.noisync.data.model
 
-data class Musician(
+data class  Musician(
     val id: String,
     val initials: String,
     val name: String,

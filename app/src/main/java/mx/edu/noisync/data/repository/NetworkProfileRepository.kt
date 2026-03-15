@@ -3,7 +3,7 @@ package mx.edu.noisync.data.repository
 import mx.edu.noisync.data.model.ChangePasswordRequest
 import mx.edu.noisync.data.model.ChangePasswordResponse
 import mx.edu.noisync.data.model.UserProfile
-import mx.edu.noisync.data.network.ApiService
+import mx.edu.noisync.core.network.ApiService
 import mx.edu.noisync.data.remote.dto.toDomain
 
 class NetworkProfileRepository(

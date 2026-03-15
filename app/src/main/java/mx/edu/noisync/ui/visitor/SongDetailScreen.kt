@@ -31,7 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mx.edu.noisync.R
-import mx.edu.noisync.data.fake.FakeSongs
+import mx.edu.noisync.fake.FakeSongs
 import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable

@@ -1,10 +1,10 @@
 package mx.edu.noisync.data.repository
 
-import mx.edu.noisync.data.network.ApiService
+import mx.edu.noisync.core.network.ApiService
 import mx.edu.noisync.data.remote.dto.toDetail
 import mx.edu.noisync.data.remote.dto.toListItem
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
 
 class NetworkSongRepository(
     private val apiService: ApiService

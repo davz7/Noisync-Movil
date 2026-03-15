@@ -1,6 +1,6 @@
-package mx.edu.noisync.data.fake
+package mx.edu.noisync.fake
 
-import mx.edu.noisync.model.Musician
+import mx.edu.noisync.data.model.Musician
 
 object FakeMusicians {
     val allMusicians = listOf(

@@ -39,9 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
-import mx.edu.noisync.data.network.RetrofitClient
-import mx.edu.noisync.ui.login.LoginActivity
-import mx.edu.noisync.ui.theme.NoisyncTheme
+import mx.edu.noisync.core.network.RetrofitClient
+import mx.edu.noisync.core.theme.NoisyncTheme
 
 class ChangePasswordActivity : ComponentActivity() {
     private val viewModel: ChangePasswordViewModel by viewModels()

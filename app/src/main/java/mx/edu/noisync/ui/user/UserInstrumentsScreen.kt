@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import mx.edu.noisync.data.fake.FakeInstruments
+import mx.edu.noisync.fake.FakeInstruments
 
 @Composable
 fun UserInstrumentsScreen(navController: NavController) {

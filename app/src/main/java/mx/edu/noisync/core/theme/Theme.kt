@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.theme
+package mx.edu.noisync.core.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

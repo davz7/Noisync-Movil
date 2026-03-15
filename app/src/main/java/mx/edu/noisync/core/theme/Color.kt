@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.theme
+package mx.edu.noisync.core.theme
 
 import androidx.compose.ui.graphics.Color
 

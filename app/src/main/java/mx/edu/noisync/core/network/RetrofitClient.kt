@@ -1,4 +1,4 @@
-package mx.edu.noisync.data.network
+package mx.edu.noisync.core.network
 
 import android.content.Context
 import okhttp3.OkHttpClient

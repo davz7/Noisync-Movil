@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.login
+package mx.edu.noisync.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -41,9 +41,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
-import mx.edu.noisync.data.network.RetrofitClient
-import mx.edu.noisync.ui.auth.ChangePasswordActivity
-import mx.edu.noisync.ui.theme.NoisyncTheme
+import mx.edu.noisync.core.network.RetrofitClient
+import mx.edu.noisync.core.theme.NoisyncTheme
 
 class LoginActivity : ComponentActivity() {
     private val viewModel: LoginViewModel by viewModels()

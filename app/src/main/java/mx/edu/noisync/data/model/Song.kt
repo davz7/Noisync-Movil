@@ -1,4 +1,4 @@
-package mx.edu.noisync.model
+package mx.edu.noisync.data.model
 
 enum class SongVisibility {
     PUBLIC,

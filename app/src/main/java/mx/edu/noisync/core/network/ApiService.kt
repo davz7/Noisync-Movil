@@ -1,4 +1,4 @@
-package mx.edu.noisync.data.network
+package mx.edu.noisync.core.network
 
 import mx.edu.noisync.data.model.LoginRequest
 import mx.edu.noisync.data.model.LoginResponse

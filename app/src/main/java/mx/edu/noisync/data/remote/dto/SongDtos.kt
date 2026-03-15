@@ -1,10 +1,10 @@
 package mx.edu.noisync.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
-import mx.edu.noisync.model.SongSection
-import mx.edu.noisync.model.SongVisibility
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
+import mx.edu.noisync.data.model.SongSection
+import mx.edu.noisync.data.model.SongVisibility
 
 data class PageResponseDto<T>(
     @SerializedName("content") val content: List<T>,

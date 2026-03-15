@@ -1,6 +1,6 @@
 package mx.edu.noisync.data.repository
 
-import mx.edu.noisync.data.network.RetrofitClient
+import mx.edu.noisync.core.network.RetrofitClient
 
 object RepositoryProvider {
     val songRepository: SongRepository by lazy {

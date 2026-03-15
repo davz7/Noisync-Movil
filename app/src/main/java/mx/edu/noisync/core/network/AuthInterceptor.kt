@@ -1,4 +1,4 @@
-package mx.edu.noisync.data.network
+package mx.edu.noisync.core.network
 
 import android.content.Context
 import mx.edu.noisync.data.local.SessionManager

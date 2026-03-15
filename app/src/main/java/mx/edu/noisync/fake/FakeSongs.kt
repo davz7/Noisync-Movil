@@ -1,9 +1,10 @@
-package mx.edu.noisync.data.fake
+package mx.edu.noisync.fake
 
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
-import mx.edu.noisync.model.SongSection
-import mx.edu.noisync.model.SongVisibility
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
+import mx.edu.noisync.data.model.SongSection
+import mx.edu.noisync.data.model.SongVisibility
+import kotlin.collections.get
 
 object FakeSongs {
     val publicSongs = listOf(

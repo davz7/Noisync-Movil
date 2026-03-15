@@ -6,12 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import mx.edu.noisync.data.local.SessionManager
-import mx.edu.noisync.data.network.RetrofitClient
+import mx.edu.noisync.core.network.RetrofitClient
 import mx.edu.noisync.ui.auth.ChangePasswordActivity
 import mx.edu.noisync.ui.navigation.LeaderNavigation
 import mx.edu.noisync.ui.navigation.MusicianNavigation
 import mx.edu.noisync.ui.navigation.VisitorNavigation
-import mx.edu.noisync.ui.theme.NoisyncTheme
+import mx.edu.noisync.core.theme.NoisyncTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -40,9 +40,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.data.model.SongListItem
 import mx.edu.noisync.ui.components.SongCard
-import mx.edu.noisync.ui.login.LoginActivity
+import mx.edu.noisync.ui.auth.LoginActivity
 
 @Composable
 fun VisitorHomeScreen(

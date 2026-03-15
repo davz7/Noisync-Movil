@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import mx.edu.noisync.data.fake.FakeMusicians
+import mx.edu.noisync.fake.FakeMusicians
 
 @Composable
 fun UserTeamScreen(navController: NavController) {
