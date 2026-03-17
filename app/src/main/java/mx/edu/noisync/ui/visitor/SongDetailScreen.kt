@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import mx.edu.noisync.R
 import mx.edu.noisync.fake.FakeSongs
+import mx.edu.noisync.ui.components.BackButton
 import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable
@@ -48,24 +49,7 @@ fun SongDetailScreen(navController: NavController, songId: String?) {
                 .systemBarsPadding()
                 .padding(15.dp)
         ) {
-            Surface(
-                shape = RoundedCornerShape(10.dp),
-                color = Color.Transparent,
-                onClick = { navController.popBackStack() }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = Color.Black
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Volver", color = Color.Black, fontWeight = FontWeight.Medium)
-                }
-            }
+            BackButton(onClick = {navController.popBackStack()})
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 shadowElevation = 2.dp,

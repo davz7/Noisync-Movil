@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import mx.edu.noisync.fake.FakeInstruments
+import mx.edu.noisync.ui.components.BackButton
 
 @Composable
 fun UserInstrumentsScreen(navController: NavController) {
@@ -50,30 +50,7 @@ fun UserInstrumentsScreen(navController: NavController) {
             modifier = Modifier
                 .padding(horizontal = 15.dp, vertical = 10.dp)
         ) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = Color.Transparent,
-                onClick = { navController.popBackStack() }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = Color.Black,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Volver",
-                        color = Color.Black,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
-                    )
-                }
-            }
+            BackButton(onClick = { navController.popBackStack() })
         }
 
         Box(
