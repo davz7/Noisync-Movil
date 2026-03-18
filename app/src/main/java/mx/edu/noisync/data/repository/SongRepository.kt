@@ -13,11 +13,19 @@ data class PageResult<T>(
 )
 
 interface SongRepository {
+    suspend fun getPublicSongs(
+        query: String? = null,
+        page: Int = 0,
+        size: Int = 10
+    ): RepositoryResult<PageResult<SongListItem>>
+
     suspend fun getVisibleSongs(
         query: String? = null,
         page: Int = 0,
         size: Int = 10
     ): RepositoryResult<PageResult<SongListItem>>
+
+    suspend fun getPublicSongDetail(songId: String): RepositoryResult<SongDetail>
 
     suspend fun getSongDetail(songId: String): RepositoryResult<SongDetail>
 }

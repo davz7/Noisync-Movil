@@ -16,29 +16,69 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import mx.edu.noisync.R
-import mx.edu.noisync.fake.FakeSongs
+import mx.edu.noisync.data.model.SongDetail
 import mx.edu.noisync.ui.components.BackButton
 import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable
-fun SongDetailScreen(navController: NavController, songId: String?) {
-    val song = FakeSongs.getSongDetail(songId)
+fun SongDetailScreen(
+    navController: NavController,
+    songId: String?,
+    isPublicSong: Boolean = false
+) {
+    val viewModel: SongDetailViewModel = viewModel()
+    val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(songId, isPublicSong) {
+        viewModel.loadSong(songId, isPublicSong)
+    }
+
+    when (val state = uiState) {
+        is SongDetailUiState.Success -> {
+            SongDetailContent(
+                song = state.song,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        is SongDetailUiState.Error -> {
+            SongDetailStatusContent(
+                message = state.message,
+                onBack = { navController.popBackStack() },
+                onRetry = { viewModel.loadSong(songId, isPublicSong) }
+            )
+        }
+
+        SongDetailUiState.Idle, SongDetailUiState.Loading -> {
+            SongDetailLoadingContent(onBack = { navController.popBackStack() })
+        }
+    }
+}
+
+@Composable
+private fun SongDetailContent(
+    song: SongDetail,
+    onBack: () -> Unit
+) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -49,7 +89,7 @@ fun SongDetailScreen(navController: NavController, songId: String?) {
                 .systemBarsPadding()
                 .padding(15.dp)
         ) {
-            BackButton(onClick = {navController.popBackStack()})
+            BackButton(onClick = onBack)
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 shadowElevation = 2.dp,
@@ -153,6 +193,74 @@ fun SongDetailScreen(navController: NavController, songId: String?) {
                                 Text(text = line, color = Color.Gray)
                             }
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SongDetailLoadingContent(onBack: () -> Unit) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.White
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .padding(15.dp)
+        ) {
+            BackButton(onClick = onBack)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = Color.Black)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SongDetailStatusContent(
+    message: String,
+    onBack: () -> Unit,
+    onRetry: () -> Unit
+) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color.White
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .padding(15.dp)
+        ) {
+            BackButton(onClick = onBack)
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = message, color = Color.Gray)
+                    Surface(
+                        onClick = onRetry,
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = Color.Black
+                    ) {
+                        Text(
+                            text = "Reintentar",
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
                     }
                 }
             }

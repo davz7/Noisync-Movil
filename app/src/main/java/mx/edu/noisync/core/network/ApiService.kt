@@ -33,13 +33,30 @@ interface ApiService {
         @Query("size") size: Int = 10
     ): Response<PageResponseDto<SongResponseDto>>
 
+    @GET("api/songs/public")
+    suspend fun getPublicSongs(
+        @Query("q") query: String? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 10
+    ): Response<PageResponseDto<SongResponseDto>>
+
     @GET("api/songs/{songId}")
     suspend fun getSongDetail(
         @Path("songId") songId: String
     ): Response<SongResponseDto>
 
+    @GET("api/songs/public/{songId}")
+    suspend fun getPublicSongDetail(
+        @Path("songId") songId: String
+    ): Response<SongResponseDto>
+
     @GET("api/songs/{songId}/sections")
     suspend fun getSongSections(
+        @Path("songId") songId: String
+    ): Response<List<SectionResponseDto>>
+
+    @GET("api/songs/public/{songId}/sections")
+    suspend fun getPublicSongSections(
         @Path("songId") songId: String
     ): Response<List<SectionResponseDto>>
 }

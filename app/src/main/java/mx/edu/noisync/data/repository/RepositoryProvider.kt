@@ -10,8 +10,4 @@ object RepositoryProvider {
     val profileRepository: ProfileRepository by lazy {
         NetworkProfileRepository(RetrofitClient.instance)
     }
-
-    val fakeSongRepository: SongRepository by lazy {
-        FakeSongRepository()
-    }
 }

@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -41,6 +43,11 @@ import mx.edu.noisync.ui.components.SongCard
 @Composable
 fun UserHomeScreen(
     songs: List<SongListItem>,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
+    onRetry: (() -> Unit)? = null,
     onOpenSong: (SongListItem) -> Unit?,
     onOpenProfile: () -> Unit
 ) {
@@ -102,29 +109,44 @@ fun UserHomeScreen(
             }
             Surface(
                 shape = RoundedCornerShape(10.dp),
-                onClick = { },
                 shadowElevation = 1.dp,
                 color = Color(246, 247, 248, 255),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                BasicTextField(
+                    value = searchQuery,
+                    onValueChange = onSearchQueryChange,
+                    singleLine = true,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.search_icon),
-                        contentDescription = "Busqueda",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = "Buscar por titulo, artista o BPM",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(5.dp)
-                    )
-                }
+                        .padding(5.dp),
+                    decorationBox = { innerTextField ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.search_icon),
+                                contentDescription = "Busqueda",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 5.dp)
+                            ) {
+                                if (searchQuery.isBlank()) {
+                                    Text(
+                                        text = "Buscar por titulo o artista",
+                                        fontSize = 12.sp,
+                                        color = Color.Gray
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
+                    }
+                )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -173,12 +195,59 @@ fun UserHomeScreen(
                     .weight(1f)
                     .fillMaxWidth()
             ) {
-                LazyColumn(
+                Box(
                     modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    contentAlignment = Alignment.Center
                 ) {
-                    items(songs) { song ->
-                        SongCard(song = song, onOpen = { onOpenSong(song) })
+                    when {
+                        isLoading -> {
+                            CircularProgressIndicator(color = Color.Black)
+                        }
+
+                        errorMessage != null -> {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(12.dp),
+                                modifier = Modifier.padding(16.dp)
+                            ) {
+                                Text(
+                                    text = errorMessage,
+                                    color = Color.Gray
+                                )
+                                if (onRetry != null) {
+                                    Surface(
+                                        onClick = onRetry,
+                                        shape = RoundedCornerShape(10.dp),
+                                        shadowElevation = 1.dp,
+                                        color = Color.Black
+                                    ) {
+                                        Text(
+                                            text = "Reintentar",
+                                            color = Color.White,
+                                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        songs.isEmpty() -> {
+                            Text(
+                                text = "No hay canciones disponibles.",
+                                color = Color.Gray
+                            )
+                        }
+
+                        else -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(songs) { song ->
+                                    SongCard(song = song, onOpen = { onOpenSong(song) })
+                                }
+                            }
+                        }
                     }
                 }
             }
