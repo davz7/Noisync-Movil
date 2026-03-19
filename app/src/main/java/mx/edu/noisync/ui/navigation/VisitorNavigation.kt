@@ -24,7 +24,8 @@ fun VisitorNavigation() {
             val uiState by viewModel.uiState.collectAsState()
             val searchQuery by viewModel.searchQuery.collectAsState()
             val selectedFilter by viewModel.selectedFilter.collectAsState()
-            val songs = (uiState as? VisitorSongsUiState.Success)?.songs.orEmpty()
+            val successState = uiState as? VisitorSongsUiState.Success
+            val songs = successState?.songs.orEmpty()
 
             VisitorHomeScreen(
                 songs = songs,
@@ -34,8 +35,11 @@ fun VisitorNavigation() {
                 onShowAll = { viewModel.selectFilter(VisitorSongsFilter.ALL) },
                 onShowRecent = { viewModel.selectFilter(VisitorSongsFilter.RECENT) },
                 isLoading = uiState is VisitorSongsUiState.Loading,
+                isLoadingMore = successState?.isLoadingMore == true,
+                hasMore = successState?.hasMore == true,
                 errorMessage = (uiState as? VisitorSongsUiState.Error)?.message,
                 onRetry = { viewModel.loadSongs(searchQuery.takeIf { it.isNotBlank() }) },
+                onLoadMore = viewModel::loadMoreSongs,
                 onOpenSong = { song ->
                     navController.navigate(AppsScreens.SongDetailScreen.createRoute(song.id))
                 }

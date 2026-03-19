@@ -14,7 +14,11 @@ import mx.edu.noisync.data.repository.RepositoryResult
 
 sealed class VisitorSongsUiState {
     object Loading : VisitorSongsUiState()
-    data class Success(val songs: List<SongListItem>) : VisitorSongsUiState()
+    data class Success(
+        val songs: List<SongListItem>,
+        val hasMore: Boolean,
+        val isLoadingMore: Boolean = false
+    ) : VisitorSongsUiState()
     data class Error(val message: String) : VisitorSongsUiState()
 }
 
@@ -25,8 +29,11 @@ enum class VisitorSongsFilter {
 
 class VisitorSongsViewModel : ViewModel() {
     private val songRepository = RepositoryProvider.songRepository
+    private val pageSize = 4
     private var searchJob: Job? = null
     private var currentSongs: List<SongListItem> = emptyList()
+    private var currentPage = 0
+    private var hasMorePages = true
 
     private val _uiState = MutableStateFlow<VisitorSongsUiState>(VisitorSongsUiState.Loading)
     val uiState: StateFlow<VisitorSongsUiState> = _uiState.asStateFlow()
@@ -43,13 +50,48 @@ class VisitorSongsViewModel : ViewModel() {
 
     fun loadSongs(query: String? = null) {
         viewModelScope.launch {
+            currentPage = 0
+            hasMorePages = true
             _uiState.value = VisitorSongsUiState.Loading
-            _uiState.value = when (val result = songRepository.getPublicSongs(query = query, page = 0, size = 10)) {
+            _uiState.value = when (val result = songRepository.getPublicSongs(query = query, page = 0, size = pageSize)) {
                 is RepositoryResult.Success -> {
                     currentSongs = result.data.content
-                    VisitorSongsUiState.Success(applyFilter(currentSongs, _selectedFilter.value))
+                    hasMorePages = !result.data.last
+                    VisitorSongsUiState.Success(
+                        songs = applyFilter(currentSongs, _selectedFilter.value),
+                        hasMore = hasMorePages
+                    )
                 }
                 is RepositoryResult.Error -> VisitorSongsUiState.Error(result.message)
+            }
+        }
+    }
+
+    fun loadMoreSongs() {
+        val query = _searchQuery.value.takeIf { it.isNotBlank() }
+        val currentState = _uiState.value as? VisitorSongsUiState.Success ?: return
+        if (!currentState.hasMore || currentState.isLoadingMore) {
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.value = currentState.copy(isLoadingMore = true)
+
+            when (val result = songRepository.getPublicSongs(query = query, page = currentPage + 1, size = pageSize)) {
+                is RepositoryResult.Success -> {
+                    currentPage += 1
+                    hasMorePages = !result.data.last
+                    currentSongs = currentSongs + result.data.content
+                    _uiState.value = VisitorSongsUiState.Success(
+                        songs = applyFilter(currentSongs, _selectedFilter.value),
+                        hasMore = hasMorePages,
+                        isLoadingMore = false
+                    )
+                }
+
+                is RepositoryResult.Error -> {
+                    _uiState.value = currentState.copy(isLoadingMore = false)
+                }
             }
         }
     }
@@ -67,7 +109,9 @@ class VisitorSongsViewModel : ViewModel() {
         _selectedFilter.value = filter
         val currentState = _uiState.value
         if (currentState is VisitorSongsUiState.Success) {
-            _uiState.value = VisitorSongsUiState.Success(applyFilter(currentSongs, filter))
+            _uiState.value = currentState.copy(
+                songs = applyFilter(currentSongs, filter)
+            )
         }
     }
 

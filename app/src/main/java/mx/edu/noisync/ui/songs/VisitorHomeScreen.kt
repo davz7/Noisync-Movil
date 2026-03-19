@@ -55,8 +55,11 @@ fun VisitorHomeScreen(
     onShowAll: () -> Unit,
     onShowRecent: () -> Unit,
     isLoading: Boolean = false,
+    isLoadingMore: Boolean = false,
+    hasMore: Boolean = false,
     errorMessage: String? = null,
     onRetry: (() -> Unit)? = null,
+    onLoadMore: (() -> Unit)? = null,
     onOpenSong: (SongListItem) -> Unit?
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -275,13 +278,22 @@ fun VisitorHomeScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Button(
-                    onClick = { onRetry?.invoke() },
+                    onClick = { onLoadMore?.invoke() },
+                    enabled = hasMore && !isLoadingMore && !isLoading,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFF2F3F4),
-                        contentColor = Color.Black
+                        contentColor = Color.Black,
+                        disabledContainerColor = Color(0xFFF2F3F4),
+                        disabledContentColor = Color.Gray
                     )
                 ) {
-                    Text(text = "Cargar mas")
+                    Text(
+                        text = when {
+                            isLoadingMore -> "Cargando..."
+                            hasMore -> "Cargar mas"
+                            else -> "Sin mas canciones"
+                        }
+                    )
                 }
             }
         }
