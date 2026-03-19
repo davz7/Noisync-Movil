@@ -4,7 +4,9 @@ import mx.edu.noisync.data.model.LoginRequest
 import mx.edu.noisync.data.model.LoginResponse
 import mx.edu.noisync.data.model.ChangePasswordRequest
 import mx.edu.noisync.data.remote.dto.ChangePasswordResponseDto
+import mx.edu.noisync.data.remote.dto.InstrumentResponseDto
 import mx.edu.noisync.data.remote.dto.MeResponseDto
+import mx.edu.noisync.data.remote.dto.MusicianResponseDto
 import mx.edu.noisync.data.remote.dto.PageResponseDto
 import mx.edu.noisync.data.remote.dto.SectionResponseDto
 import mx.edu.noisync.data.remote.dto.SongResponseDto
@@ -25,6 +27,12 @@ interface ApiService {
 
     @GET("api/me")
     suspend fun getMe(): Response<MeResponseDto>
+
+    @GET("api/musicians")
+    suspend fun getMusicians(): Response<List<MusicianResponseDto>>
+
+    @GET("api/instruments")
+    suspend fun getInstruments(): Response<List<InstrumentResponseDto>>
 
     @GET("api/songs")
     suspend fun getSongs(

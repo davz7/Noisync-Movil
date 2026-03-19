@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.user
+package mx.edu.noisync.ui.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

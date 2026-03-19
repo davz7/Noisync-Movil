@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.visitor
+package mx.edu.noisync.ui.songs
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,11 +1,11 @@
 package mx.edu.noisync.data.model
 
-data class  Musician(
+data class Musician(
     val id: String,
-    val initials: String,
-    val name: String,
-    val instrument: String,
-    val role: String,
-    val status: String,
-    val avatarColor: Long
+    val bandId: Long?,
+    val fullName: String,
+    val email: String?,
+    val username: String?,
+    val status: String?,
+    val instruments: List<String>
 )

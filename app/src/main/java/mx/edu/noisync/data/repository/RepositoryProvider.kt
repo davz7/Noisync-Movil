@@ -10,4 +10,12 @@ object RepositoryProvider {
     val profileRepository: ProfileRepository by lazy {
         NetworkProfileRepository(RetrofitClient.instance)
     }
+
+    val musicianRepository: MusicianRepository by lazy {
+        NetworkMusicianRepository(RetrofitClient.instance)
+    }
+
+    val instrumentRepository: InstrumentRepository by lazy {
+        NetworkInstrumentRepository(RetrofitClient.instance)
+    }
 }

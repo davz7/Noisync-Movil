@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.user
+package mx.edu.noisync.ui.profile
 
 import android.content.Intent
 import android.widget.Toast

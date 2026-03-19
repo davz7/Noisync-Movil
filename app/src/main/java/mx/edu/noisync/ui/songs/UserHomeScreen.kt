@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.user
+package mx.edu.noisync.ui.songs
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
 import mx.edu.noisync.data.model.SongListItem
-import mx.edu.noisync.ui.components.SongCard
 
 @Composable
 fun UserHomeScreen(

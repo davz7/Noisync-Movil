@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.visitor
+package mx.edu.noisync.ui.songs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +35,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import mx.edu.noisync.data.model.SongDetail
 import mx.edu.noisync.ui.components.BackButton
-import mx.edu.noisync.ui.components.SongCover
 import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable

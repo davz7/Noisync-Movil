@@ -9,11 +9,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import mx.edu.noisync.ui.visitor.SongDetailScreen
-import mx.edu.noisync.ui.visitor.VisitorSongsFilter
-import mx.edu.noisync.ui.visitor.VisitorSongsUiState
-import mx.edu.noisync.ui.visitor.VisitorHomeScreen
-import mx.edu.noisync.ui.visitor.VisitorSongsViewModel
+import mx.edu.noisync.ui.songs.SongDetailScreen
+import mx.edu.noisync.ui.songs.VisitorSongsFilter
+import mx.edu.noisync.ui.songs.VisitorSongsUiState
+import mx.edu.noisync.ui.songs.VisitorHomeScreen
+import mx.edu.noisync.ui.songs.VisitorSongsViewModel
 
 @Composable
 fun VisitorNavigation() {

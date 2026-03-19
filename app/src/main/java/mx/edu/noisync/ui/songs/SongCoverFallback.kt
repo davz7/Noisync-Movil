@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.components
+package mx.edu.noisync.ui.songs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

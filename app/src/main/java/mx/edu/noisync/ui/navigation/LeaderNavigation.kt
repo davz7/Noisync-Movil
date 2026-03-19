@@ -9,14 +9,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import mx.edu.noisync.ui.user.UserHomeScreen
-import mx.edu.noisync.ui.user.UserInfo
-import mx.edu.noisync.ui.user.UserInstrumentsScreen
-import mx.edu.noisync.ui.user.UserSongsFilter
-import mx.edu.noisync.ui.user.UserSongsUiState
-import mx.edu.noisync.ui.user.UserSongsViewModel
-import mx.edu.noisync.ui.user.UserTeamScreen
-import mx.edu.noisync.ui.visitor.SongDetailScreen
+import mx.edu.noisync.ui.instruments.UserInstrumentsScreen
+import mx.edu.noisync.ui.profile.UserInfo
+import mx.edu.noisync.ui.songs.SongDetailScreen
+import mx.edu.noisync.ui.songs.UserHomeScreen
+import mx.edu.noisync.ui.songs.UserSongsFilter
+import mx.edu.noisync.ui.songs.UserSongsUiState
+import mx.edu.noisync.ui.songs.UserSongsViewModel
+import mx.edu.noisync.ui.team.UserTeamScreen
 
 @Composable
 fun LeaderNavigation() {

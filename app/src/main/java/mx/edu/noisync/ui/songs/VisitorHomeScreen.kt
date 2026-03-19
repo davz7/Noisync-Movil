@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.visitor
+package mx.edu.noisync.ui.songs
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
 import mx.edu.noisync.data.model.SongListItem
 import mx.edu.noisync.ui.auth.LoginActivity
-import mx.edu.noisync.ui.components.SongCard
 
 @Composable
 fun VisitorHomeScreen(

@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.components
+package mx.edu.noisync.ui.songs
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
