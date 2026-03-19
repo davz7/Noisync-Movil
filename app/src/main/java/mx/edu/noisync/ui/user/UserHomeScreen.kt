@@ -45,10 +45,16 @@ fun UserHomeScreen(
     songs: List<SongListItem>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
+    selectedFilter: UserSongsFilter,
+    onShowAll: () -> Unit,
+    onShowPublic: () -> Unit,
+    onShowPrivate: () -> Unit,
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onRetry: (() -> Unit)? = null,
     onOpenSong: (SongListItem) -> Unit?,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -91,6 +97,20 @@ fun UserHomeScreen(
                             .fillMaxWidth(0.5f)
                             .padding(5.dp)
                     ) {
+                        DropdownMenuItem(
+                            text = { Text("Musicos") },
+                            onClick = {
+                                expanded = false
+                                onOpenTeam()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Instrumentos") },
+                            onClick = {
+                                expanded = false
+                                onOpenInstruments()
+                            }
+                        )
                         DropdownMenuItem(
                             text = { Text("Mi perfil") },
                             onClick = {
@@ -153,10 +173,10 @@ fun UserHomeScreen(
                 modifier = Modifier.padding(5.dp)
             ) {
                 Surface(
-                    onClick = { },
+                    onClick = onShowAll,
                     shape = RoundedCornerShape(10.dp),
                     shadowElevation = 1.dp,
-                    color = Color(0xFFF4F5F6)
+                    color = if (selectedFilter == UserSongsFilter.ALL) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
                 ) {
                     Text(
                         text = "Todas",
@@ -165,10 +185,10 @@ fun UserHomeScreen(
                 }
 
                 Surface(
-                    onClick = { },
+                    onClick = onShowPublic,
                     shape = RoundedCornerShape(10.dp),
                     shadowElevation = 1.dp,
-                    color = Color(0xFFF4F5F6)
+                    color = if (selectedFilter == UserSongsFilter.PUBLIC) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
                 ) {
                     Text(
                         text = "Publicas",
@@ -176,10 +196,10 @@ fun UserHomeScreen(
                     )
                 }
                 Surface(
-                    onClick = { },
+                    onClick = onShowPrivate,
                     shape = RoundedCornerShape(10.dp),
                     shadowElevation = 1.dp,
-                    color = Color(0xFFF4F5F6)
+                    color = if (selectedFilter == UserSongsFilter.PRIVATE) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
                 ) {
                     Text(
                         text = "Privadas",

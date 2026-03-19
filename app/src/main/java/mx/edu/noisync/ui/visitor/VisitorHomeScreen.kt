@@ -51,6 +51,9 @@ fun VisitorHomeScreen(
     songs: List<SongListItem>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
+    selectedFilter: VisitorSongsFilter,
+    onShowAll: () -> Unit,
+    onShowRecent: () -> Unit,
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onRetry: (() -> Unit)? = null,
@@ -173,10 +176,10 @@ fun VisitorHomeScreen(
                 modifier = Modifier.padding(5.dp)
             ) {
                 Surface(
-                    onClick = { },
+                    onClick = onShowAll,
                     shape = RoundedCornerShape(10.dp),
                     shadowElevation = 1.dp,
-                    color = Color(0xFFF4F5F6)
+                    color = if (selectedFilter == VisitorSongsFilter.ALL) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
                 ) {
                     Text(
                         text = "Todas",
@@ -185,10 +188,10 @@ fun VisitorHomeScreen(
                 }
 
                 Surface(
-                    onClick = { },
+                    onClick = onShowRecent,
                     shape = RoundedCornerShape(10.dp),
                     shadowElevation = 1.dp,
-                    color = Color(0xFFF4F5F6)
+                    color = if (selectedFilter == VisitorSongsFilter.RECENT) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
                 ) {
                     Text(
                         text = "Recientes",

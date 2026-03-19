@@ -18,15 +18,24 @@ sealed class VisitorSongsUiState {
     data class Error(val message: String) : VisitorSongsUiState()
 }
 
+enum class VisitorSongsFilter {
+    ALL,
+    RECENT
+}
+
 class VisitorSongsViewModel : ViewModel() {
     private val songRepository = RepositoryProvider.songRepository
     private var searchJob: Job? = null
+    private var currentSongs: List<SongListItem> = emptyList()
 
     private val _uiState = MutableStateFlow<VisitorSongsUiState>(VisitorSongsUiState.Loading)
     val uiState: StateFlow<VisitorSongsUiState> = _uiState.asStateFlow()
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    private val _selectedFilter = MutableStateFlow(VisitorSongsFilter.ALL)
+    val selectedFilter: StateFlow<VisitorSongsFilter> = _selectedFilter.asStateFlow()
 
     init {
         loadSongs()
@@ -36,7 +45,10 @@ class VisitorSongsViewModel : ViewModel() {
         viewModelScope.launch {
             _uiState.value = VisitorSongsUiState.Loading
             _uiState.value = when (val result = songRepository.getPublicSongs(query = query, page = 0, size = 10)) {
-                is RepositoryResult.Success -> VisitorSongsUiState.Success(result.data.content)
+                is RepositoryResult.Success -> {
+                    currentSongs = result.data.content
+                    VisitorSongsUiState.Success(applyFilter(currentSongs, _selectedFilter.value))
+                }
                 is RepositoryResult.Error -> VisitorSongsUiState.Error(result.message)
             }
         }
@@ -48,6 +60,26 @@ class VisitorSongsViewModel : ViewModel() {
         searchJob = viewModelScope.launch {
             delay(300)
             loadSongs(query = query.takeIf { it.isNotBlank() })
+        }
+    }
+
+    fun selectFilter(filter: VisitorSongsFilter) {
+        _selectedFilter.value = filter
+        val currentState = _uiState.value
+        if (currentState is VisitorSongsUiState.Success) {
+            _uiState.value = VisitorSongsUiState.Success(applyFilter(currentSongs, filter))
+        }
+    }
+
+    private fun applyFilter(
+        songs: List<SongListItem>,
+        filter: VisitorSongsFilter
+    ): List<SongListItem> {
+        return when (filter) {
+            VisitorSongsFilter.ALL -> songs
+            VisitorSongsFilter.RECENT -> songs
+                .sortedByDescending { it.createdAt.orEmpty() }
+                .take(5)
         }
     }
 }

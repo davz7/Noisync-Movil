@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mx.edu.noisync.ui.visitor.SongDetailScreen
+import mx.edu.noisync.ui.visitor.VisitorSongsFilter
 import mx.edu.noisync.ui.visitor.VisitorSongsUiState
 import mx.edu.noisync.ui.visitor.VisitorHomeScreen
 import mx.edu.noisync.ui.visitor.VisitorSongsViewModel
@@ -22,12 +23,16 @@ fun VisitorNavigation() {
             val viewModel: VisitorSongsViewModel = viewModel()
             val uiState by viewModel.uiState.collectAsState()
             val searchQuery by viewModel.searchQuery.collectAsState()
+            val selectedFilter by viewModel.selectedFilter.collectAsState()
             val songs = (uiState as? VisitorSongsUiState.Success)?.songs.orEmpty()
 
             VisitorHomeScreen(
                 songs = songs,
                 searchQuery = searchQuery,
                 onSearchQueryChange = viewModel::onSearchQueryChange,
+                selectedFilter = selectedFilter,
+                onShowAll = { viewModel.selectFilter(VisitorSongsFilter.ALL) },
+                onShowRecent = { viewModel.selectFilter(VisitorSongsFilter.RECENT) },
                 isLoading = uiState is VisitorSongsUiState.Loading,
                 errorMessage = (uiState as? VisitorSongsUiState.Error)?.message,
                 onRetry = { viewModel.loadSongs(searchQuery.takeIf { it.isNotBlank() }) },
