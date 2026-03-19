@@ -26,6 +26,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,6 +91,7 @@ fun VisitorHomeScreen(
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Menu",
+                            tint = Color.Black,
                             modifier = Modifier.padding(5.dp)
                         )
                     }
@@ -107,6 +109,10 @@ fun VisitorHomeScreen(
                                 expanded = false
                                 context.startActivity(Intent(context, LoginActivity::class.java))
                             },
+                            colors = MenuDefaults.itemColors(
+                                textColor = Color.Black,
+                                leadingIconColor = Color.Black
+                            ),
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
@@ -140,6 +146,10 @@ fun VisitorHomeScreen(
                     value = searchQuery,
                     onValueChange = onSearchQueryChange,
                     singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp),

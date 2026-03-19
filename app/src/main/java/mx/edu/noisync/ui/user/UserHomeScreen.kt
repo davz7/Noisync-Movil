@@ -23,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -86,6 +87,7 @@ fun UserHomeScreen(
                         Icon(
                             imageVector = Icons.Default.Menu,
                             contentDescription = "Menu",
+                            tint = Color.Black,
                             modifier = Modifier.padding(5.dp)
                         )
                     }
@@ -102,14 +104,16 @@ fun UserHomeScreen(
                             onClick = {
                                 expanded = false
                                 onOpenTeam()
-                            }
+                            },
+                            colors = MenuDefaults.itemColors(textColor = Color.Black)
                         )
                         DropdownMenuItem(
                             text = { Text("Instrumentos") },
                             onClick = {
                                 expanded = false
                                 onOpenInstruments()
-                            }
+                            },
+                            colors = MenuDefaults.itemColors(textColor = Color.Black)
                         )
                         DropdownMenuItem(
                             text = { Text("Mi perfil") },
@@ -117,6 +121,10 @@ fun UserHomeScreen(
                                 expanded = false
                                 onOpenProfile()
                             },
+                            colors = MenuDefaults.itemColors(
+                                textColor = Color.Black,
+                                leadingIconColor = Color.Black
+                            ),
                             leadingIcon = {
                                 Icon(
                                     imageVector = Icons.Default.AccountCircle,
@@ -137,6 +145,10 @@ fun UserHomeScreen(
                     value = searchQuery,
                     onValueChange = onSearchQueryChange,
                     singleLine = true,
+                    textStyle = androidx.compose.ui.text.TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(5.dp),

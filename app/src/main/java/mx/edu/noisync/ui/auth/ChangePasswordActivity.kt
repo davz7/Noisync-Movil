@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -155,7 +156,8 @@ class ChangePasswordActivity : ComponentActivity() {
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
                                 enabled = !isLoading,
-                                shape = RoundedCornerShape(10.dp)
+                                shape = RoundedCornerShape(10.dp),
+                                colors = authFieldColors()
                             )
 
                             Spacer(modifier = Modifier.padding(8.dp))
@@ -174,7 +176,8 @@ class ChangePasswordActivity : ComponentActivity() {
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
                                 enabled = !isLoading,
-                                shape = RoundedCornerShape(10.dp)
+                                shape = RoundedCornerShape(10.dp),
+                                colors = authFieldColors()
                             )
 
                             Spacer(modifier = Modifier.padding(8.dp))
@@ -193,7 +196,8 @@ class ChangePasswordActivity : ComponentActivity() {
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                                 modifier = Modifier.fillMaxWidth(),
                                 enabled = !isLoading,
-                                shape = RoundedCornerShape(10.dp)
+                                shape = RoundedCornerShape(10.dp),
+                                colors = authFieldColors()
                             )
 
                             Spacer(modifier = Modifier.padding(12.dp))
@@ -288,3 +292,17 @@ class ChangePasswordActivity : ComponentActivity() {
         finish()
     }
 }
+
+@Composable
+private fun authFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedTextColor = Color.Black,
+    unfocusedTextColor = Color.Black,
+    disabledTextColor = Color.Gray,
+    focusedPlaceholderColor = Color.Gray,
+    unfocusedPlaceholderColor = Color.Gray,
+    disabledPlaceholderColor = Color.Gray,
+    cursorColor = Color.Black,
+    focusedBorderColor = Color.Black,
+    unfocusedBorderColor = Color(0xFFBDBDBD),
+    disabledBorderColor = Color(0xFFE0E0E0)
+)
