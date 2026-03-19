@@ -1,6 +1,5 @@
 package mx.edu.noisync.ui.visitor
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +28,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import mx.edu.noisync.R
 import mx.edu.noisync.data.model.SongDetail
 import mx.edu.noisync.ui.components.BackButton
+import mx.edu.noisync.ui.components.SongCover
 import mx.edu.noisync.ui.components.TransposeButton
 
 @Composable
@@ -98,10 +97,12 @@ private fun SongDetailContent(
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(R.drawable.undefined),
-                            contentDescription = "Song Image",
-                            modifier = Modifier.size(70.dp)
+                        SongCover(
+                            title = song.title,
+                            coverUrl = song.coverUrl,
+                            modifier = Modifier.size(70.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            initialsSize = 24.sp
                         )
                         Column(modifier = Modifier.padding(start = 12.dp)) {
                             Text(
