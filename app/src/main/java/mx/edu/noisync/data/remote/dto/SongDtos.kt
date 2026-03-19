@@ -1,10 +1,10 @@
 package mx.edu.noisync.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
-import mx.edu.noisync.model.SongSection
-import mx.edu.noisync.model.SongVisibility
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
+import mx.edu.noisync.data.model.SongSection
+import mx.edu.noisync.data.model.SongVisibility
 
 data class PageResponseDto<T>(
     @SerializedName("content") val content: List<T>,
@@ -26,6 +26,7 @@ data class SongResponseDto(
     @SerializedName("visibilidad") val visibilidad: String,
     @SerializedName("estatus") val estatus: String? = null,
     @SerializedName("coverUrl") val coverUrl: String? = null,
+    @SerializedName("nombreBanda") val nombreBanda: String? = null,
     @SerializedName("fechaCreacion") val fechaCreacion: String? = null,
     @SerializedName("fechaActualizacion") val fechaActualizacion: String? = null
 )
@@ -50,6 +51,7 @@ fun SongResponseDto.toListItem(): SongListItem {
         visibility = visibilidad.toVisibility(),
         status = estatus,
         coverUrl = coverUrl,
+        bandName = nombreBanda,
         createdAt = fechaCreacion,
         updatedAt = fechaActualizacion
     )
@@ -68,6 +70,7 @@ fun SongResponseDto.toDetail(sections: List<SectionResponseDto>): SongDetail {
         status = estatus,
         sections = sections.map { it.toDomain() },
         coverUrl = coverUrl,
+        bandName = nombreBanda,
         createdAt = fechaCreacion,
         updatedAt = fechaActualizacion
     )

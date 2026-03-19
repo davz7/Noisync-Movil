@@ -1,6 +1,6 @@
-package mx.edu.noisync.data.fake
+package mx.edu.noisync.fake
 
-import mx.edu.noisync.model.Instrument
+import mx.edu.noisync.data.model.Instrument
 
 object FakeInstruments {
     val allInstruments = listOf(

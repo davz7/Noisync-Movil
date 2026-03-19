@@ -1,26 +1,49 @@
 package mx.edu.noisync.data.repository
 
-import mx.edu.noisync.data.network.ApiService
+import mx.edu.noisync.core.network.ApiService
 import mx.edu.noisync.data.remote.dto.toDetail
 import mx.edu.noisync.data.remote.dto.toListItem
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
 
 class NetworkSongRepository(
     private val apiService: ApiService
 ) : SongRepository {
+    override suspend fun getPublicSongs(
+        query: String?,
+        page: Int,
+        size: Int
+    ): RepositoryResult<PageResult<SongListItem>> {
+        return fetchSongPage { apiService.getPublicSongs(query = query, page = page, size = size) }
+    }
 
     override suspend fun getVisibleSongs(
         query: String?,
         page: Int,
         size: Int
     ): RepositoryResult<PageResult<SongListItem>> {
+        return fetchSongPage { apiService.getSongs(query = query, page = page, size = size) }
+    }
+
+    override suspend fun getPublicSongDetail(songId: String): RepositoryResult<SongDetail> {
+        return fetchSongDetail(
+            loadDetail = { apiService.getPublicSongDetail(songId) },
+            loadSections = { apiService.getPublicSongSections(songId) }
+        )
+    }
+
+    override suspend fun getSongDetail(songId: String): RepositoryResult<SongDetail> {
+        return fetchSongDetail(
+            loadDetail = { apiService.getSongDetail(songId) },
+            loadSections = { apiService.getSongSections(songId) }
+        )
+    }
+
+    private suspend fun fetchSongPage(
+        request: suspend () -> retrofit2.Response<mx.edu.noisync.data.remote.dto.PageResponseDto<mx.edu.noisync.data.remote.dto.SongResponseDto>>
+    ): RepositoryResult<PageResult<SongListItem>> {
         return try {
-            val response = apiService.getSongs(
-                query = query,
-                page = page,
-                size = size
-            )
+            val response = request()
 
             if (response.isSuccessful) {
                 val body = response.body()
@@ -49,9 +72,12 @@ class NetworkSongRepository(
         }
     }
 
-    override suspend fun getSongDetail(songId: String): RepositoryResult<SongDetail> {
+    private suspend fun fetchSongDetail(
+        loadDetail: suspend () -> retrofit2.Response<mx.edu.noisync.data.remote.dto.SongResponseDto>,
+        loadSections: suspend () -> retrofit2.Response<List<mx.edu.noisync.data.remote.dto.SectionResponseDto>>
+    ): RepositoryResult<SongDetail> {
         return try {
-            val detailResponse = apiService.getSongDetail(songId)
+            val detailResponse = loadDetail()
             if (!detailResponse.isSuccessful) {
                 return RepositoryResult.Error(
                     message = detailResponse.message().ifBlank { "Error ${detailResponse.code()}" },
@@ -62,7 +88,7 @@ class NetworkSongRepository(
             val detailBody = detailResponse.body()
                 ?: return RepositoryResult.Error("Respuesta del servidor vacia", detailResponse.code())
 
-            val sectionsResponse = apiService.getSongSections(songId)
+            val sectionsResponse = loadSections()
             if (!sectionsResponse.isSuccessful) {
                 return RepositoryResult.Error(
                     message = sectionsResponse.message().ifBlank { "Error ${sectionsResponse.code()}" },

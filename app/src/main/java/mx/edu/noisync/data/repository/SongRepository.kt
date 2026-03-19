@@ -1,7 +1,7 @@
 package mx.edu.noisync.data.repository
 
-import mx.edu.noisync.model.SongDetail
-import mx.edu.noisync.model.SongListItem
+import mx.edu.noisync.data.model.SongDetail
+import mx.edu.noisync.data.model.SongListItem
 
 data class PageResult<T>(
     val content: List<T>,
@@ -13,11 +13,19 @@ data class PageResult<T>(
 )
 
 interface SongRepository {
+    suspend fun getPublicSongs(
+        query: String? = null,
+        page: Int = 0,
+        size: Int = 10
+    ): RepositoryResult<PageResult<SongListItem>>
+
     suspend fun getVisibleSongs(
         query: String? = null,
         page: Int = 0,
         size: Int = 10
     ): RepositoryResult<PageResult<SongListItem>>
+
+    suspend fun getPublicSongDetail(songId: String): RepositoryResult<SongDetail>
 
     suspend fun getSongDetail(songId: String): RepositoryResult<SongDetail>
 }

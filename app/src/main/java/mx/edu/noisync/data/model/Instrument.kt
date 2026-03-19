@@ -1,4 +1,4 @@
-package mx.edu.noisync.model
+package mx.edu.noisync.data.model
 
 data class Instrument(
     val id: String,

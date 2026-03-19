@@ -1,4 +1,4 @@
-package mx.edu.noisync.ui.login
+package mx.edu.noisync.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import mx.edu.noisync.data.model.LoginRequest
 import mx.edu.noisync.data.model.LoginResponse
-import mx.edu.noisync.data.network.RetrofitClient
+import mx.edu.noisync.core.network.RetrofitClient
 
 sealed class LoginUiState {
     object Idle : LoginUiState()

@@ -14,13 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +37,7 @@ import androidx.navigation.compose.rememberNavController
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
 import mx.edu.noisync.data.model.UserProfile
+import mx.edu.noisync.ui.components.BackButton
 
 @Composable
 fun UserInfo(navController: NavController) {
@@ -94,30 +91,7 @@ private fun UserInfoContent(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
         ) {
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = Color.Transparent,
-                onClick = { navController.popBackStack() }
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Volver",
-                        tint = Color.Black,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Volver",
-                        color = Color.Black,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
-                    )
-                }
-            }
+            BackButton(onClick = { navController.popBackStack() })
         }
 
         Box(
