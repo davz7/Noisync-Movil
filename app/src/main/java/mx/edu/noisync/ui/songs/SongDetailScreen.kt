@@ -25,6 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -77,6 +80,10 @@ private fun SongDetailContent(
     song: SongDetail,
     onBack: () -> Unit
 ) {
+    var transposition by rememberSaveable(song.id) { mutableIntStateOf(0) }
+    val displayedKey = transposeKey(song.originalKey, transposition)
+    val transpositionLabel = if (transposition == 0) "Original" else "${if (transposition > 0) "+" else ""}$transposition st"
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -121,7 +128,7 @@ private fun SongDetailContent(
                             )
 
                             Row(modifier = Modifier.padding(top = 4.dp)) {
-                                Text(text = "Tono: ${song.originalKey}", fontWeight = FontWeight.SemiBold)
+                                Text(text = "Tono: $displayedKey", fontWeight = FontWeight.SemiBold)
                                 Spacer(modifier = Modifier.width(20.dp))
                                 Text(text = "BPM: ${song.bpm}", fontWeight = FontWeight.SemiBold)
                             }
@@ -129,23 +136,41 @@ private fun SongDetailContent(
                     }
 
                     Spacer(modifier = Modifier.size(16.dp))
-                    Text(
-                        text = "Transposicion",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color.Gray,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(bottom = 8.dp)
-                    )
+                    ) {
+                        Text(
+                            text = "Controles de transposicion",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (transposition == 0) Color(0xFF6B7280) else Color(0xFF198754)
+                        ) {
+                            Text(
+                                text = transpositionLabel,
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        TransposeButton(text = "-1", subText = "") { }
-                        TransposeButton(text = "-", subText = "1/2") { }
+                        TransposeButton(text = "-1", subText = "") { transposition -= 2 }
+                        TransposeButton(text = "-", subText = "1/2") { transposition -= 1 }
 
                         Surface(
-                            onClick = { },
+                            onClick = { transposition = 0 },
                             shape = RoundedCornerShape(12.dp),
                             color = Color.White,
                             shadowElevation = 1.dp,
@@ -159,8 +184,8 @@ private fun SongDetailContent(
                             }
                         }
 
-                        TransposeButton(text = "+", subText = "1/2") { }
-                        TransposeButton(text = "+1", subText = "") { }
+                        TransposeButton(text = "+", subText = "1/2") { transposition += 1 }
+                        TransposeButton(text = "+1", subText = "") { transposition += 2 }
                     }
                 }
             }
@@ -179,20 +204,13 @@ private fun SongDetailContent(
                         .padding(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(song.sections) { section ->
-                        Column {
-                            Text(
-                                text = section.title,
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-
-                            section.lines.forEach { line ->
-                                Text(text = line, color = Color.Gray)
-                            }
-                        }
+                    item {
+                        SongStructureView(
+                            sections = song.sections,
+                            tonic = song.originalKey,
+                            scale = song.baseScale,
+                            transposition = transposition
+                        )
                     }
                 }
             }

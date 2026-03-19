@@ -81,7 +81,7 @@ fun SectionResponseDto.toDomain(): SongSection {
         id = sectionId.toString(),
         order = ordenSeccion,
         title = etiqueta,
-        lines = contenido.split("\n").map { it.trim() }.filter { it.isNotBlank() }
+        lines = contenido.split("\n")
     )
 }
 
