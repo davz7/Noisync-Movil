@@ -131,12 +131,7 @@ fun LoginScreen(
                             Text("Entrar", color = Color.White)
                         }
                     }
-
                     Spacer(modifier = Modifier.padding(8.dp))
-
-                    TextButton(onClick = { }) {
-                        Text("Olvidaste tu contrasena?", color = Color.Gray)
-                    }
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }

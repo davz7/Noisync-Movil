@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,7 +46,6 @@ fun UserInfo(navController: NavController) {
     val sessionManager = SessionManager(context)
     val viewModel: UserInfoViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val profile = (uiState as? UserInfoUiState.Success)?.profile
     val errorMessage = (uiState as? UserInfoUiState.Error)?.message
 
     LaunchedEffect(errorMessage) {
@@ -54,14 +54,30 @@ fun UserInfo(navController: NavController) {
         }
     }
 
-    UserInfoContent(
-        navController = navController,
-        sessionManager = sessionManager,
-        displayName = profile.displayName(),
-        displayRole = profile.roleLabel(sessionManager.getRole()),
-        displayBand = profile?.bandName ?: "Sin banda",
-        displayEmail = profile?.email ?: "No disponible"
-    )
+    when (val state = uiState) {
+        UserInfoUiState.Loading -> {
+            UserInfoLoadingContent(navController = navController)
+        }
+
+        is UserInfoUiState.Success -> {
+            val profile = state.profile
+            UserInfoContent(
+                navController = navController,
+                sessionManager = sessionManager,
+                displayName = profile.displayName(),
+                displayRole = profile.roleLabel(sessionManager.getRole()),
+                displayBand = profile.bandName ?: "Sin banda",
+                displayEmail = profile.email ?: "No disponible"
+            )
+        }
+
+        is UserInfoUiState.Error -> {
+            UserInfoErrorContent(
+                navController = navController,
+                onRetry = viewModel::loadProfile
+            )
+        }
+    }
 }
 
 @Composable
@@ -256,6 +272,83 @@ fun UserInfoPreview() {
         displayBand = "Los Nocturnos",
         displayEmail = "juan.delgado@example.com"
     )
+}
+
+@Composable
+private fun UserInfoLoadingContent(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .background(Color.White)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
+        ) {
+            BackButton(onClick = { navController.popBackStack() })
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Color.Black)
+        }
+    }
+}
+
+@Composable
+private fun UserInfoErrorContent(
+    navController: NavController,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .background(Color.White)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
+        ) {
+            BackButton(onClick = { navController.popBackStack() })
+        }
+
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = Color.White
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "No se pudo cargar el perfil.",
+                        color = Color.Gray
+                    )
+                    Surface(
+                        onClick = onRetry,
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = Color.Black
+                    ) {
+                        Text(
+                            text = "Reintentar",
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 private fun UserProfile?.displayName(): String {

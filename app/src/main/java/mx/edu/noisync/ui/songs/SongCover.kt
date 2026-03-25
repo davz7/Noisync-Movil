@@ -34,19 +34,19 @@ fun SongCover(
                 .background(songAvatarColor(title)),
             contentAlignment = Alignment.Center
         ) {
-            if (painter.state is AsyncImagePainter.State.Success) {
-                Image(
-                    painter = painter,
-                    contentDescription = title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            } else {
+            if (painter.state is AsyncImagePainter.State.Error) {
                 SongCoverFallback(
                     title = title,
                     modifier = Modifier.fillMaxSize(),
                     shape = shape,
                     initialsSize = initialsSize
+                )
+            } else {
+                Image(
+                    painter = painter,
+                    contentDescription = title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }

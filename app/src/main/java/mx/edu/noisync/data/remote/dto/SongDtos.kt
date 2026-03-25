@@ -1,6 +1,7 @@
 package mx.edu.noisync.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
+import mx.edu.noisync.core.network.RetrofitClient
 import mx.edu.noisync.data.model.SongDetail
 import mx.edu.noisync.data.model.SongListItem
 import mx.edu.noisync.data.model.SongSection
@@ -50,7 +51,7 @@ fun SongResponseDto.toListItem(): SongListItem {
         baseScale = escalaBase,
         visibility = visibilidad.toVisibility(),
         status = estatus,
-        coverUrl = coverUrl,
+        coverUrl = RetrofitClient.resolveUrl(coverUrl),
         bandName = nombreBanda,
         createdAt = fechaCreacion,
         updatedAt = fechaActualizacion
@@ -69,7 +70,7 @@ fun SongResponseDto.toDetail(sections: List<SectionResponseDto>): SongDetail {
         visibility = visibilidad.toVisibility(),
         status = estatus,
         sections = sections.map { it.toDomain() },
-        coverUrl = coverUrl,
+        coverUrl = RetrofitClient.resolveUrl(coverUrl),
         bandName = nombreBanda,
         createdAt = fechaCreacion,
         updatedAt = fechaActualizacion

@@ -115,12 +115,6 @@ fun VisitorHomeScreen(
                                 textColor = Color.Black,
                                 leadingIconColor = Color.Black
                             ),
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.AccountCircle,
-                                    contentDescription = "Cuenta"
-                                )
-                            }
                         )
                     }
                 }

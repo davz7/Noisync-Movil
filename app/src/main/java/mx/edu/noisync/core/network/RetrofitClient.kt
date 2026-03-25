@@ -28,6 +28,21 @@ object RetrofitClient {
     val instance: ApiService
         get() = apiService ?: error("RetrofitClient no esta inicializado")
 
+    fun resolveUrl(url: String?): String? {
+        val normalizedUrl = url?.trim()?.takeIf { it.isNotEmpty() } ?: return null
+
+        if (normalizedUrl.startsWith("http://") || normalizedUrl.startsWith("https://")) {
+            return normalizeAbsoluteUrl(normalizedUrl)
+        }
+
+        val baseUrl = BASE_URL.removeSuffix("/")
+        return if (normalizedUrl.startsWith("/")) {
+            baseUrl + normalizedUrl
+        } else {
+            "$baseUrl/$normalizedUrl"
+        }
+    }
+
     private fun createRetrofit(context: Context): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -48,5 +63,29 @@ object RetrofitClient {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
+    }
+
+    private fun normalizeAbsoluteUrl(url: String): String {
+        return try {
+            val base = java.net.URI(BASE_URL)
+            val uri = java.net.URI(url)
+            val host = uri.host?.lowercase()
+
+            if (host == "localhost" || host == "127.0.0.1" || host == "10.0.2.2") {
+                java.net.URI(
+                    base.scheme,
+                    uri.userInfo,
+                    base.host,
+                    base.port,
+                    uri.path,
+                    uri.query,
+                    uri.fragment
+                ).toString()
+            } else {
+                url
+            }
+        } catch (_: Exception) {
+            url
+        }
     }
 }
