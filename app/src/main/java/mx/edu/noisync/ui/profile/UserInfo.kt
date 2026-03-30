@@ -34,14 +34,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import mx.edu.noisync.MainActivity
 import mx.edu.noisync.data.local.SessionManager
 import mx.edu.noisync.data.model.UserProfile
-import mx.edu.noisync.ui.components.BackButton
+import mx.edu.noisync.ui.components.AuthenticatedBottomBar
+import mx.edu.noisync.ui.components.AuthenticatedDestination
 
 @Composable
-fun UserInfo(navController: NavController) {
+fun UserInfo(
+    navController: NavController,
+    onOpenSongs: () -> Unit,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
+    onOpenProfile: () -> Unit
+) {
     val context = LocalContext.current
     val sessionManager = SessionManager(context)
     val viewModel: UserInfoViewModel = viewModel()
@@ -56,25 +62,36 @@ fun UserInfo(navController: NavController) {
 
     when (val state = uiState) {
         UserInfoUiState.Loading -> {
-            UserInfoLoadingContent(navController = navController)
+            UserInfoLoadingContent(
+                onOpenSongs = onOpenSongs,
+                onOpenTeam = onOpenTeam,
+                onOpenInstruments = onOpenInstruments,
+                onOpenProfile = onOpenProfile
+            )
         }
 
         is UserInfoUiState.Success -> {
             val profile = state.profile
             UserInfoContent(
-                navController = navController,
                 sessionManager = sessionManager,
                 displayName = profile.displayName(),
                 displayRole = profile.roleLabel(sessionManager.getRole()),
                 displayBand = profile.bandName ?: "Sin banda",
-                displayEmail = profile.email ?: "No disponible"
+                displayEmail = profile.email ?: "No disponible",
+                onOpenSongs = onOpenSongs,
+                onOpenTeam = onOpenTeam,
+                onOpenInstruments = onOpenInstruments,
+                onOpenProfile = onOpenProfile
             )
         }
 
         is UserInfoUiState.Error -> {
             UserInfoErrorContent(
-                navController = navController,
-                onRetry = viewModel::loadProfile
+                onRetry = viewModel::loadProfile,
+                onOpenSongs = onOpenSongs,
+                onOpenTeam = onOpenTeam,
+                onOpenInstruments = onOpenInstruments,
+                onOpenProfile = onOpenProfile
             )
         }
     }
@@ -82,12 +99,15 @@ fun UserInfo(navController: NavController) {
 
 @Composable
 private fun UserInfoContent(
-    navController: NavController,
     sessionManager: SessionManager,
     displayName: String,
     displayRole: String,
     displayBand: String,
-    displayEmail: String
+    displayEmail: String,
+    onOpenSongs: () -> Unit,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
+    onOpenProfile: () -> Unit
 ) {
     val context = LocalContext.current
     val initials = displayName
@@ -103,17 +123,10 @@ private fun UserInfoContent(
             .systemBarsPadding()
             .background(Color.White)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
-        ) {
-            BackButton(onClick = { navController.popBackStack() })
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(horizontal = 15.dp, vertical = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -126,6 +139,7 @@ private fun UserInfoContent(
 
         Column(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -258,6 +272,14 @@ private fun UserInfoContent(
                 }
             }
         }
+
+        AuthenticatedBottomBar(
+            selectedDestination = AuthenticatedDestination.PROFILE,
+            onOpenSongs = onOpenSongs,
+            onOpenTeam = onOpenTeam,
+            onOpenInstruments = onOpenInstruments,
+            onOpenProfile = onOpenProfile
+        )
     }
 }
 
@@ -265,43 +287,24 @@ private fun UserInfoContent(
 @Composable
 fun UserInfoPreview() {
     UserInfoContent(
-        navController = rememberNavController(),
         sessionManager = SessionManager(LocalContext.current),
         displayName = "Juan Delgado",
         displayRole = "Lider",
         displayBand = "Los Nocturnos",
-        displayEmail = "juan.delgado@example.com"
+        displayEmail = "juan.delgado@example.com",
+        onOpenSongs = {},
+        onOpenTeam = {},
+        onOpenInstruments = {},
+        onOpenProfile = {}
     )
 }
 
 @Composable
-private fun UserInfoLoadingContent(navController: NavController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-            .background(Color.White)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
-        ) {
-            BackButton(onClick = { navController.popBackStack() })
-        }
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(color = Color.Black)
-        }
-    }
-}
-
-@Composable
-private fun UserInfoErrorContent(
-    navController: NavController,
-    onRetry: () -> Unit
+private fun UserInfoLoadingContent(
+    onOpenSongs: () -> Unit,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
+    onOpenProfile: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -309,15 +312,43 @@ private fun UserInfoErrorContent(
             .systemBarsPadding()
             .background(Color.White)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            BackButton(onClick = { navController.popBackStack() })
+            CircularProgressIndicator(color = Color.Black)
         }
 
+        AuthenticatedBottomBar(
+            selectedDestination = AuthenticatedDestination.PROFILE,
+            onOpenSongs = onOpenSongs,
+            onOpenTeam = onOpenTeam,
+            onOpenInstruments = onOpenInstruments,
+            onOpenProfile = onOpenProfile
+        )
+    }
+}
+
+@Composable
+private fun UserInfoErrorContent(
+    onRetry: () -> Unit,
+    onOpenSongs: () -> Unit,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
+    onOpenProfile: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
+            .background(Color.White)
+    ) {
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             Surface(
@@ -348,6 +379,13 @@ private fun UserInfoErrorContent(
                 }
             }
         }
+        AuthenticatedBottomBar(
+            selectedDestination = AuthenticatedDestination.PROFILE,
+            onOpenSongs = onOpenSongs,
+            onOpenTeam = onOpenTeam,
+            onOpenInstruments = onOpenInstruments,
+            onOpenProfile = onOpenProfile
+        )
     }
 }
 

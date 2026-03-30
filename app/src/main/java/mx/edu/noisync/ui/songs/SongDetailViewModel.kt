@@ -34,7 +34,12 @@ class SongDetailViewModel : ViewModel() {
             val result = if (isPublicSong) {
                 songRepository.getPublicSongDetail(songId)
             } else {
-                songRepository.getSongDetail(songId)
+                val privateResult = songRepository.getSongDetail(songId)
+                if (privateResult is RepositoryResult.Error && privateResult.code in setOf(401, 403, 404)) {
+                    songRepository.getPublicSongDetail(songId)
+                } else {
+                    privateResult
+                }
             }
 
             _uiState.value = when (result) {

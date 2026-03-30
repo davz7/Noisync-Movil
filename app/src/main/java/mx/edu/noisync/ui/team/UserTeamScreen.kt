@@ -32,10 +32,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import mx.edu.noisync.data.model.Musician
-import mx.edu.noisync.ui.components.BackButton
+import mx.edu.noisync.ui.components.AuthenticatedBottomBar
+import mx.edu.noisync.ui.components.AuthenticatedDestination
 
 @Composable
-fun UserTeamScreen(navController: NavController) {
+fun UserTeamScreen(
+    navController: NavController,
+    onOpenSongs: () -> Unit,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
+    onOpenProfile: () -> Unit
+) {
     val viewModel: TeamViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -48,17 +55,10 @@ fun UserTeamScreen(navController: NavController) {
                 .fillMaxSize()
                 .systemBarsPadding()
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
-            ) {
-                BackButton(onClick = { navController.popBackStack() })
-            }
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(horizontal = 15.dp, vertical = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -71,7 +71,8 @@ fun UserTeamScreen(navController: NavController) {
 
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .weight(1f)
+                    .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 contentAlignment = Alignment.Center
             ) {
@@ -119,6 +120,13 @@ fun UserTeamScreen(navController: NavController) {
                     }
                 }
             }
+            AuthenticatedBottomBar(
+                selectedDestination = AuthenticatedDestination.TEAM,
+                onOpenSongs = onOpenSongs,
+                onOpenTeam = onOpenTeam,
+                onOpenInstruments = onOpenInstruments,
+                onOpenProfile = onOpenProfile
+            )
         }
     }
 }

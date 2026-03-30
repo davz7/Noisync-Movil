@@ -20,8 +20,7 @@ sealed class UserSongsUiState {
 
 enum class UserSongsFilter {
     ALL,
-    PUBLIC,
-    PRIVATE
+    RECENT
 }
 
 class UserSongsViewModel : ViewModel() {
@@ -45,7 +44,7 @@ class UserSongsViewModel : ViewModel() {
     fun loadSongs(query: String? = null) {
         viewModelScope.launch {
             _uiState.value = UserSongsUiState.Loading
-            _uiState.value = when (val result = songRepository.getVisibleSongs(query = query, page = 0, size = 10)) {
+            _uiState.value = when (val result = songRepository.getPublicSongs(query = query, page = 0, size = 10)) {
                 is RepositoryResult.Success -> {
                     currentSongs = result.data.content
                     UserSongsUiState.Success(applyFilter(currentSongs, _selectedFilter.value))
@@ -84,8 +83,9 @@ class UserSongsViewModel : ViewModel() {
     ): List<SongListItem> {
         return when (filter) {
             UserSongsFilter.ALL -> songs
-            UserSongsFilter.PUBLIC -> songs.filter { it.isPublic }
-            UserSongsFilter.PRIVATE -> songs.filter { !it.isPublic }
+            UserSongsFilter.RECENT -> songs
+                .sortedByDescending { it.createdAt.orEmpty() }
+                .take(5)
         }
     }
 }

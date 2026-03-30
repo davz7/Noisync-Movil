@@ -16,21 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.edu.noisync.R
 import mx.edu.noisync.data.model.SongListItem
+import mx.edu.noisync.ui.components.AuthenticatedBottomBar
+import mx.edu.noisync.ui.components.AuthenticatedDestination
 
 @Composable
 fun UserHomeScreen(
@@ -47,92 +38,47 @@ fun UserHomeScreen(
     onSearchQueryChange: (String) -> Unit,
     selectedFilter: UserSongsFilter,
     onShowAll: () -> Unit,
-    onShowPublic: () -> Unit,
-    onShowPrivate: () -> Unit,
+    onShowRecent: () -> Unit,
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onRetry: (() -> Unit)? = null,
     onOpenSong: (SongListItem) -> Unit?,
+    onOpenSongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-
     Surface(color = Color.White) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
-                .padding(15.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp, vertical = 15.dp)
             ) {
                 Image(
                     painter = painterResource(R.drawable.logo),
-                    contentDescription = "Profile Photo",
+                    contentDescription = "Logo",
                     modifier = Modifier.size(40.dp)
                 )
                 Spacer(modifier = Modifier.width(5.dp))
-                Spacer(modifier = Modifier.weight(1f))
-                Box {
-                    Surface(
-                        color = Color.White,
-                        shape = RoundedCornerShape(10.dp),
-                        onClick = { expanded = true }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = Color.Black,
-                            modifier = Modifier.padding(5.dp)
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        containerColor = Color.White,
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .padding(5.dp)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Musicos") },
-                            onClick = {
-                                expanded = false
-                                onOpenTeam()
-                            },
-                            colors = MenuDefaults.itemColors(textColor = Color.Black)
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Instrumentos") },
-                            onClick = {
-                                expanded = false
-                                onOpenInstruments()
-                            },
-                            colors = MenuDefaults.itemColors(textColor = Color.Black)
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Mi perfil") },
-                            onClick = {
-                                expanded = false
-                                onOpenProfile()
-                            },
-                            colors = MenuDefaults.itemColors(
-                                textColor = Color.Black,
-                                leadingIconColor = Color.Black
-                            ),
-                        )
-                    }
-                }
+                Text(
+                    text = "Canciones",
+                    color = Color.Black,
+                    fontSize = 20.sp
+                )
             }
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 shadowElevation = 1.dp,
                 color = Color(246, 247, 248, 255),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 15.dp)
             ) {
                 BasicTextField(
                     value = searchQuery,
@@ -175,7 +121,7 @@ fun UserHomeScreen(
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(5.dp)
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
             ) {
                 Surface(
                     onClick = onShowAll,
@@ -190,24 +136,13 @@ fun UserHomeScreen(
                 }
 
                 Surface(
-                    onClick = onShowPublic,
+                    onClick = onShowRecent,
                     shape = RoundedCornerShape(10.dp),
                     shadowElevation = 1.dp,
-                    color = if (selectedFilter == UserSongsFilter.PUBLIC) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
+                    color = if (selectedFilter == UserSongsFilter.RECENT) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
                 ) {
                     Text(
-                        text = "Publicas",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-                Surface(
-                    onClick = onShowPrivate,
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 1.dp,
-                    color = if (selectedFilter == UserSongsFilter.PRIVATE) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
-                ) {
-                    Text(
-                        text = "Privadas",
+                        text = "Recientes",
                         modifier = Modifier.padding(10.dp)
                     )
                 }
@@ -216,7 +151,7 @@ fun UserHomeScreen(
                 shape = RoundedCornerShape(10.dp),
                 color = Color.White,
                 modifier = Modifier
-                    .padding(10.dp)
+                    .padding(horizontal = 25.dp, vertical = 10.dp)
                     .weight(1f)
                     .fillMaxWidth()
             ) {
@@ -276,6 +211,13 @@ fun UserHomeScreen(
                     }
                 }
             }
+            AuthenticatedBottomBar(
+                selectedDestination = AuthenticatedDestination.SONGS,
+                onOpenSongs = onOpenSongs,
+                onOpenTeam = onOpenTeam,
+                onOpenInstruments = onOpenInstruments,
+                onOpenProfile = onOpenProfile
+            )
         }
     }
 }

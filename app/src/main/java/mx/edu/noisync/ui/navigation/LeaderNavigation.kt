@@ -21,6 +21,15 @@ import mx.edu.noisync.ui.team.UserTeamScreen
 @Composable
 fun LeaderNavigation() {
     val navController = rememberNavController()
+    fun navigateFromBottomBar(route: String) {
+        navController.navigate(route) {
+            launchSingleTop = true
+            restoreState = true
+            popUpTo(AppsScreens.LeaderHomeScreen.route) {
+                saveState = true
+            }
+        }
+    }
 
     NavHost(navController = navController, startDestination = AppsScreens.LeaderHomeScreen.route) {
         composable(route = AppsScreens.LeaderHomeScreen.route) {
@@ -36,22 +45,24 @@ fun LeaderNavigation() {
                 onSearchQueryChange = viewModel::onSearchQueryChange,
                 selectedFilter = selectedFilter,
                 onShowAll = { viewModel.selectFilter(UserSongsFilter.ALL) },
-                onShowPublic = { viewModel.selectFilter(UserSongsFilter.PUBLIC) },
-                onShowPrivate = { viewModel.selectFilter(UserSongsFilter.PRIVATE) },
+                onShowRecent = { viewModel.selectFilter(UserSongsFilter.RECENT) },
                 isLoading = uiState is UserSongsUiState.Loading,
                 errorMessage = (uiState as? UserSongsUiState.Error)?.message,
                 onRetry = { viewModel.loadSongs(searchQuery.takeIf { it.isNotBlank() }) },
                 onOpenSong = { song ->
                     navController.navigate(AppsScreens.SongDetailScreen.createRoute(song.id))
                 },
+                onOpenSongs = {
+                    navigateFromBottomBar(AppsScreens.LeaderHomeScreen.route)
+                },
                 onOpenTeam = {
-                    navController.navigate(AppsScreens.LeaderTeamScreen.route)
+                    navigateFromBottomBar(AppsScreens.LeaderTeamScreen.route)
                 },
                 onOpenInstruments = {
-                    navController.navigate(AppsScreens.LeaderInstrumentsScreen.route)
+                    navigateFromBottomBar(AppsScreens.LeaderInstrumentsScreen.route)
                 },
                 onOpenProfile = {
-                    navController.navigate(AppsScreens.LeaderProfileScreen.route)
+                    navigateFromBottomBar(AppsScreens.LeaderProfileScreen.route)
                 }
             )
         }
@@ -68,15 +79,33 @@ fun LeaderNavigation() {
         }
 
         composable(route = AppsScreens.LeaderTeamScreen.route) {
-            UserTeamScreen(navController = navController)
+            UserTeamScreen(
+                navController = navController,
+                onOpenSongs = { navigateFromBottomBar(AppsScreens.LeaderHomeScreen.route) },
+                onOpenTeam = { navigateFromBottomBar(AppsScreens.LeaderTeamScreen.route) },
+                onOpenInstruments = { navigateFromBottomBar(AppsScreens.LeaderInstrumentsScreen.route) },
+                onOpenProfile = { navigateFromBottomBar(AppsScreens.LeaderProfileScreen.route) }
+            )
         }
 
         composable(route = AppsScreens.LeaderInstrumentsScreen.route) {
-            UserInstrumentsScreen(navController = navController)
+            UserInstrumentsScreen(
+                navController = navController,
+                onOpenSongs = { navigateFromBottomBar(AppsScreens.LeaderHomeScreen.route) },
+                onOpenTeam = { navigateFromBottomBar(AppsScreens.LeaderTeamScreen.route) },
+                onOpenInstruments = { navigateFromBottomBar(AppsScreens.LeaderInstrumentsScreen.route) },
+                onOpenProfile = { navigateFromBottomBar(AppsScreens.LeaderProfileScreen.route) }
+            )
         }
 
         composable(route = AppsScreens.LeaderProfileScreen.route) {
-            UserInfo(navController = navController)
+            UserInfo(
+                navController = navController,
+                onOpenSongs = { navigateFromBottomBar(AppsScreens.LeaderHomeScreen.route) },
+                onOpenTeam = { navigateFromBottomBar(AppsScreens.LeaderTeamScreen.route) },
+                onOpenInstruments = { navigateFromBottomBar(AppsScreens.LeaderInstrumentsScreen.route) },
+                onOpenProfile = { navigateFromBottomBar(AppsScreens.LeaderProfileScreen.route) }
+            )
         }
     }
 }

@@ -35,10 +35,17 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import mx.edu.noisync.data.model.Instrument
-import mx.edu.noisync.ui.components.BackButton
+import mx.edu.noisync.ui.components.AuthenticatedBottomBar
+import mx.edu.noisync.ui.components.AuthenticatedDestination
 
 @Composable
-fun UserInstrumentsScreen(navController: NavController) {
+fun UserInstrumentsScreen(
+    navController: NavController,
+    onOpenSongs: () -> Unit,
+    onOpenTeam: () -> Unit,
+    onOpenInstruments: () -> Unit,
+    onOpenProfile: () -> Unit
+) {
     val viewModel: InstrumentsViewModel = viewModel()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -48,17 +55,10 @@ fun UserInstrumentsScreen(navController: NavController) {
             .systemBarsPadding()
             .background(Color.White)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
-        ) {
-            BackButton(onClick = { navController.popBackStack() })
-        }
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .padding(horizontal = 15.dp, vertical = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -71,7 +71,8 @@ fun UserInstrumentsScreen(navController: NavController) {
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .weight(1f)
+                .fillMaxWidth()
                 .padding(horizontal = 20.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -119,6 +120,13 @@ fun UserInstrumentsScreen(navController: NavController) {
                 }
             }
         }
+        AuthenticatedBottomBar(
+            selectedDestination = AuthenticatedDestination.INSTRUMENTS,
+            onOpenSongs = onOpenSongs,
+            onOpenTeam = onOpenTeam,
+            onOpenInstruments = onOpenInstruments,
+            onOpenProfile = onOpenProfile
+        )
     }
 }
 

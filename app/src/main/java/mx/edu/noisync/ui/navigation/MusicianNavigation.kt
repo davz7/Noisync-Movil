@@ -21,6 +21,15 @@ import mx.edu.noisync.ui.team.UserTeamScreen
 @Composable
 fun MusicianNavigation() {
     val navController = rememberNavController()
+    fun navigateFromBottomBar(route: String) {
+        navController.navigate(route) {
+            launchSingleTop = true
+            restoreState = true
+            popUpTo(AppsScreens.MusicianHomeScreen.route) {
+                saveState = true
+            }
+        }
+    }
 
     NavHost(navController = navController, startDestination = AppsScreens.MusicianHomeScreen.route) {
         composable(route = AppsScreens.MusicianHomeScreen.route) {
@@ -36,22 +45,24 @@ fun MusicianNavigation() {
                 onSearchQueryChange = viewModel::onSearchQueryChange,
                 selectedFilter = selectedFilter,
                 onShowAll = { viewModel.selectFilter(UserSongsFilter.ALL) },
-                onShowPublic = { viewModel.selectFilter(UserSongsFilter.PUBLIC) },
-                onShowPrivate = { viewModel.selectFilter(UserSongsFilter.PRIVATE) },
+                onShowRecent = { viewModel.selectFilter(UserSongsFilter.RECENT) },
                 isLoading = uiState is UserSongsUiState.Loading,
                 errorMessage = (uiState as? UserSongsUiState.Error)?.message,
                 onRetry = { viewModel.loadSongs(searchQuery.takeIf { it.isNotBlank() }) },
                 onOpenSong = { song ->
                     navController.navigate(AppsScreens.SongDetailScreen.createRoute(song.id))
                 },
+                onOpenSongs = {
+                    navigateFromBottomBar(AppsScreens.MusicianHomeScreen.route)
+                },
                 onOpenTeam = {
-                    navController.navigate(AppsScreens.MusicianTeamScreen.route)
+                    navigateFromBottomBar(AppsScreens.MusicianTeamScreen.route)
                 },
                 onOpenInstruments = {
-                    navController.navigate(AppsScreens.MusicianInstrumentsScreen.route)
+                    navigateFromBottomBar(AppsScreens.MusicianInstrumentsScreen.route)
                 },
                 onOpenProfile = {
-                    navController.navigate(AppsScreens.MusicianProfileScreen.route)
+                    navigateFromBottomBar(AppsScreens.MusicianProfileScreen.route)
                 }
             )
         }
@@ -68,15 +79,33 @@ fun MusicianNavigation() {
         }
 
         composable(route = AppsScreens.MusicianTeamScreen.route) {
-            UserTeamScreen(navController = navController)
+            UserTeamScreen(
+                navController = navController,
+                onOpenSongs = { navigateFromBottomBar(AppsScreens.MusicianHomeScreen.route) },
+                onOpenTeam = { navigateFromBottomBar(AppsScreens.MusicianTeamScreen.route) },
+                onOpenInstruments = { navigateFromBottomBar(AppsScreens.MusicianInstrumentsScreen.route) },
+                onOpenProfile = { navigateFromBottomBar(AppsScreens.MusicianProfileScreen.route) }
+            )
         }
 
         composable(route = AppsScreens.MusicianInstrumentsScreen.route) {
-            UserInstrumentsScreen(navController = navController)
+            UserInstrumentsScreen(
+                navController = navController,
+                onOpenSongs = { navigateFromBottomBar(AppsScreens.MusicianHomeScreen.route) },
+                onOpenTeam = { navigateFromBottomBar(AppsScreens.MusicianTeamScreen.route) },
+                onOpenInstruments = { navigateFromBottomBar(AppsScreens.MusicianInstrumentsScreen.route) },
+                onOpenProfile = { navigateFromBottomBar(AppsScreens.MusicianProfileScreen.route) }
+            )
         }
 
         composable(route = AppsScreens.MusicianProfileScreen.route) {
-            UserInfo(navController = navController)
+            UserInfo(
+                navController = navController,
+                onOpenSongs = { navigateFromBottomBar(AppsScreens.MusicianHomeScreen.route) },
+                onOpenTeam = { navigateFromBottomBar(AppsScreens.MusicianTeamScreen.route) },
+                onOpenInstruments = { navigateFromBottomBar(AppsScreens.MusicianInstrumentsScreen.route) },
+                onOpenProfile = { navigateFromBottomBar(AppsScreens.MusicianProfileScreen.route) }
+            )
         }
     }
 }
