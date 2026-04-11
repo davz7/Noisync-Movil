@@ -46,7 +46,7 @@ class UserSongsViewModel : ViewModel() {
     fun loadSongs(query: String? = null) {
         viewModelScope.launch {
             _uiState.value = UserSongsUiState.Loading
-            _uiState.value = when (val result = loadAllVisibleSongs(query)) {
+            _uiState.value = when (val result = loadAllSongs(query)) {
                 is RepositoryResult.Success -> {
                     currentSongs = result.data
                     UserSongsUiState.Success(applyFilter(currentSongs, _selectedFilter.value))
@@ -79,12 +79,40 @@ class UserSongsViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadAllVisibleSongs(query: String?): RepositoryResult<List<SongListItem>> {
+    private suspend fun loadAllSongs(query: String?): RepositoryResult<List<SongListItem>> {
+        val publicSongsResult = loadAllPages { page, size ->
+            songRepository.getPublicSongs(query = query, page = page, size = size)
+        }
+        if (publicSongsResult is RepositoryResult.Error) {
+            return publicSongsResult
+        }
+
+        val visibleSongsResult = loadAllPages { page, size ->
+            songRepository.getVisibleSongs(query = query, page = page, size = size)
+        }
+        if (visibleSongsResult is RepositoryResult.Error) {
+            return visibleSongsResult
+        }
+
+        val publicSongs = (publicSongsResult as RepositoryResult.Success).data
+        val privateSongs = (visibleSongsResult as RepositoryResult.Success).data
+            .filter { !it.isPublic }
+
+        val mergedSongs = linkedMapOf<String, SongListItem>()
+        publicSongs.forEach { mergedSongs[it.id] = it }
+        privateSongs.forEach { mergedSongs[it.id] = it }
+
+        return RepositoryResult.Success(mergedSongs.values.toList())
+    }
+
+    private suspend fun loadAllPages(
+        request: suspend (page: Int, size: Int) -> RepositoryResult<mx.edu.noisync.data.repository.PageResult<SongListItem>>
+    ): RepositoryResult<List<SongListItem>> {
         val loadedSongs = mutableListOf<SongListItem>()
         var page = 0
 
         while (true) {
-            when (val result = songRepository.getVisibleSongs(query = query, page = page, size = pageSize)) {
+            when (val result = request(page, pageSize)) {
                 is RepositoryResult.Success -> {
                     loadedSongs += result.data.content
                     if (result.data.last) {

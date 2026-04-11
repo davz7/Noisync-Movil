@@ -35,7 +35,7 @@ class SongDetailViewModel : ViewModel() {
                 songRepository.getPublicSongDetail(songId)
             } else {
                 val privateResult = songRepository.getSongDetail(songId)
-                if (privateResult is RepositoryResult.Error && privateResult.code in setOf(401, 403, 404)) {
+                if (privateResult is RepositoryResult.Error && privateResult.code in setOf(400, 401, 403, 404)) {
                     songRepository.getPublicSongDetail(songId)
                 } else {
                     privateResult
