@@ -46,6 +46,7 @@ fun MusicianNavigation() {
                 selectedFilter = selectedFilter,
                 onShowAll = { viewModel.selectFilter(UserSongsFilter.ALL) },
                 onShowRecent = { viewModel.selectFilter(UserSongsFilter.RECENT) },
+                onShowPrivate = { viewModel.selectFilter(UserSongsFilter.PRIVATE) },
                 isLoading = uiState is UserSongsUiState.Loading,
                 errorMessage = (uiState as? UserSongsUiState.Error)?.message,
                 onRetry = { viewModel.loadSongs(searchQuery.takeIf { it.isNotBlank() }) },

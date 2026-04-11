@@ -1,10 +1,14 @@
 package mx.edu.noisync.data.repository
 
 import mx.edu.noisync.core.network.ApiService
-import mx.edu.noisync.data.remote.dto.toDetail
-import mx.edu.noisync.data.remote.dto.toListItem
 import mx.edu.noisync.data.model.SongDetail
 import mx.edu.noisync.data.model.SongListItem
+import mx.edu.noisync.data.remote.dto.PageResponseDto
+import mx.edu.noisync.data.remote.dto.SectionResponseDto
+import mx.edu.noisync.data.remote.dto.SongResponseDto
+import mx.edu.noisync.data.remote.dto.toDetail
+import mx.edu.noisync.data.remote.dto.toListItem
+import retrofit2.Response
 
 class NetworkSongRepository(
     private val apiService: ApiService
@@ -33,31 +37,14 @@ class NetworkSongRepository(
     }
 
     override suspend fun getSongDetail(songId: String): RepositoryResult<SongDetail> {
-        return try {
-            val publicRes = apiService.getPublicSongDetail(songId)
-
-            if (publicRes.isSuccessful && publicRes.body() != null) {
-                val sectionsRes = apiService.getPublicSongSections(songId)
-                val sections = sectionsRes.body().orEmpty()
-                RepositoryResult.Success(publicRes.body()!!.toDetail(sections))
-            } else {
-                val privateRes = apiService.getPrivateSongDetail(songId)
-                if (privateRes.isSuccessful && privateRes.body() != null) {
-                    val sectionsRes = apiService.getPrivateSongSections(songId)
-                    val sections = sectionsRes.body().orEmpty()
-                    RepositoryResult.Success(privateRes.body()!!.toDetail(sections))
-                } else {
-                    RepositoryResult.Error("No tienes permiso para ver esta canción", privateRes.code())
-                }
-            }
-        } catch (e: Exception) {
-            RepositoryResult.Error("Sin conexión al servidor")
-        }
-        }
+        return fetchSongDetail(
+            loadDetail = { apiService.getPrivateSongDetail(songId) },
+            loadSections = { apiService.getPrivateSongSections(songId) }
+        )
     }
 
     private suspend fun fetchSongPage(
-        request: suspend () -> retrofit2.Response<mx.edu.noisync.data.remote.dto.PageResponseDto<mx.edu.noisync.data.remote.dto.SongResponseDto>>
+        request: suspend () -> Response<PageResponseDto<SongResponseDto>>
     ): RepositoryResult<PageResult<SongListItem>> {
         return try {
             val response = request()
@@ -90,8 +77,8 @@ class NetworkSongRepository(
     }
 
     private suspend fun fetchSongDetail(
-        loadDetail: suspend () -> retrofit2.Response<mx.edu.noisync.data.remote.dto.SongResponseDto>,
-        loadSections: suspend () -> retrofit2.Response<List<mx.edu.noisync.data.remote.dto.SectionResponseDto>>
+        loadDetail: suspend () -> Response<SongResponseDto>,
+        loadSections: suspend () -> Response<List<SectionResponseDto>>
     ): RepositoryResult<SongDetail> {
         return try {
             val detailResponse = loadDetail()
@@ -119,3 +106,4 @@ class NetworkSongRepository(
             RepositoryResult.Error("Sin conexion al servidor")
         }
     }
+}

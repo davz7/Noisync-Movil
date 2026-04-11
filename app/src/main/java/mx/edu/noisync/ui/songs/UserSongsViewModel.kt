@@ -20,11 +20,13 @@ sealed class UserSongsUiState {
 
 enum class UserSongsFilter {
     ALL,
-    RECENT
+    RECENT,
+    PRIVATE
 }
 
 class UserSongsViewModel : ViewModel() {
     private val songRepository = RepositoryProvider.songRepository
+    private val pageSize = 50
     private var searchJob: Job? = null
     private var currentSongs: List<SongListItem> = emptyList()
 
@@ -44,9 +46,9 @@ class UserSongsViewModel : ViewModel() {
     fun loadSongs(query: String? = null) {
         viewModelScope.launch {
             _uiState.value = UserSongsUiState.Loading
-            _uiState.value = when (val result = songRepository.getPublicSongs(query = query, page = 0, size = 10)) {
+            _uiState.value = when (val result = loadAllVisibleSongs(query)) {
                 is RepositoryResult.Success -> {
-                    currentSongs = result.data.content
+                    currentSongs = result.data
                     UserSongsUiState.Success(applyFilter(currentSongs, _selectedFilter.value))
                 }
                 is RepositoryResult.Error -> UserSongsUiState.Error(
@@ -77,15 +79,34 @@ class UserSongsViewModel : ViewModel() {
         }
     }
 
+    private suspend fun loadAllVisibleSongs(query: String?): RepositoryResult<List<SongListItem>> {
+        val loadedSongs = mutableListOf<SongListItem>()
+        var page = 0
+
+        while (true) {
+            when (val result = songRepository.getVisibleSongs(query = query, page = page, size = pageSize)) {
+                is RepositoryResult.Success -> {
+                    loadedSongs += result.data.content
+                    if (result.data.last) {
+                        return RepositoryResult.Success(loadedSongs)
+                    }
+                    page += 1
+                }
+                is RepositoryResult.Error -> return result
+            }
+        }
+    }
+
     private fun applyFilter(
         songs: List<SongListItem>,
         filter: UserSongsFilter
     ): List<SongListItem> {
         return when (filter) {
-            UserSongsFilter.ALL -> songs
+            UserSongsFilter.ALL -> songs.filter { it.isPublic }
             UserSongsFilter.RECENT -> songs
+                .filter { it.isPublic }
                 .sortedByDescending { it.createdAt.orEmpty() }
-                .take(5)
+            UserSongsFilter.PRIVATE -> songs.filter { !it.isPublic }
         }
     }
 }

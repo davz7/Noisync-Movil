@@ -39,6 +39,7 @@ fun UserHomeScreen(
     selectedFilter: UserSongsFilter,
     onShowAll: () -> Unit,
     onShowRecent: () -> Unit,
+    onShowPrivate: () -> Unit,
     isLoading: Boolean = false,
     errorMessage: String? = null,
     onRetry: (() -> Unit)? = null,
@@ -143,6 +144,18 @@ fun UserHomeScreen(
                 ) {
                     Text(
                         text = "Recientes",
+                        modifier = Modifier.padding(10.dp)
+                    )
+                }
+
+                Surface(
+                    onClick = onShowPrivate,
+                    shape = RoundedCornerShape(10.dp),
+                    shadowElevation = 1.dp,
+                    color = if (selectedFilter == UserSongsFilter.PRIVATE) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
+                ) {
+                    Text(
+                        text = "Privadas",
                         modifier = Modifier.padding(10.dp)
                     )
                 }
