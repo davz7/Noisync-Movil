@@ -33,10 +33,27 @@ class NetworkSongRepository(
     }
 
     override suspend fun getSongDetail(songId: String): RepositoryResult<SongDetail> {
-        return fetchSongDetail(
-            loadDetail = { apiService.getSongDetail(songId) },
-            loadSections = { apiService.getSongSections(songId) }
-        )
+        return try {
+            val publicRes = apiService.getPublicSongDetail(songId)
+
+            if (publicRes.isSuccessful && publicRes.body() != null) {
+                val sectionsRes = apiService.getPublicSongSections(songId)
+                val sections = sectionsRes.body().orEmpty()
+                RepositoryResult.Success(publicRes.body()!!.toDetail(sections))
+            } else {
+                val privateRes = apiService.getPrivateSongDetail(songId)
+                if (privateRes.isSuccessful && privateRes.body() != null) {
+                    val sectionsRes = apiService.getPrivateSongSections(songId)
+                    val sections = sectionsRes.body().orEmpty()
+                    RepositoryResult.Success(privateRes.body()!!.toDetail(sections))
+                } else {
+                    RepositoryResult.Error("No tienes permiso para ver esta canción", privateRes.code())
+                }
+            }
+        } catch (e: Exception) {
+            RepositoryResult.Error("Sin conexión al servidor")
+        }
+        }
     }
 
     private suspend fun fetchSongPage(
@@ -102,4 +119,3 @@ class NetworkSongRepository(
             RepositoryResult.Error("Sin conexion al servidor")
         }
     }
-}

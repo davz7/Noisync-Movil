@@ -18,7 +18,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    
+
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
 
@@ -48,23 +48,25 @@ interface ApiService {
         @Query("size") size: Int = 10
     ): Response<PageResponseDto<SongResponseDto>>
 
-    @GET("api/songs/{songId}")
-    suspend fun getSongDetail(
-        @Path("songId") songId: String
-    ): Response<SongResponseDto>
-
+    // --- MÉTODOS PÚBLICOS ---
     @GET("api/songs/public/{songId}")
     suspend fun getPublicSongDetail(
         @Path("songId") songId: String
     ): Response<SongResponseDto>
 
-    @GET("api/songs/{songId}/sections")
-    suspend fun getSongSections(
+    @GET("api/songs/public/{songId}/sections")
+    suspend fun getPublicSongSections(
         @Path("songId") songId: String
     ): Response<List<SectionResponseDto>>
 
-    @GET("api/songs/public/{songId}/sections")
-    suspend fun getPublicSongSections(
+    // --- MÉTODOS PRIVADOS ---
+    @GET("api/songs/{songId}")
+    suspend fun getPrivateSongDetail(
+        @Path("songId") songId: String
+    ): Response<SongResponseDto>
+
+    @GET("api/songs/{songId}/sections")
+    suspend fun getPrivateSongSections(
         @Path("songId") songId: String
     ): Response<List<SectionResponseDto>>
 }
