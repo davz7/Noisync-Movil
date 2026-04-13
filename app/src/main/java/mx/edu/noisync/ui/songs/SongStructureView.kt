@@ -1,36 +1,26 @@
 package mx.edu.noisync.ui.songs
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import mx.edu.noisync.data.model.SongSection
-import kotlin.math.abs
-import kotlin.math.max
 
 private val notes = listOf("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
-private val flats = mapOf(
-    "Db" to "C#",
-    "Eb" to "D#",
-    "Fb" to "E",
-    "Gb" to "F#",
-    "Ab" to "G#",
-    "Bb" to "A#",
-    "Cb" to "B"
-)
+private val flats = mapOf("Db" to "C#", "Eb" to "D#", "Fb" to "E", "Gb" to "F#", "Ab" to "G#", "Bb" to "A#", "Cb" to "B")
 private val majorDegrees = listOf(0, 2, 4, 5, 7, 9, 11)
 private val minorDegrees = listOf(0, 2, 3, 5, 7, 8, 10)
 private val majorTypes = listOf("", "m", "m", "", "", "m", "dim")
@@ -43,30 +33,29 @@ fun SongStructureView(
     scale: String?,
     transposition: Int
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         sections.forEach { section ->
             Surface(
                 shape = RoundedCornerShape(12.dp),
-                shadowElevation = 1.dp,
+                shadowElevation = 2.dp,
                 color = Color.White,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.padding(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Etiqueta de la sección
                     Surface(
                         shape = RoundedCornerShape(8.dp),
                         color = Color(0xFFDFF5E1)
                     ) {
                         Text(
-                            text = section.title,
+                            text = section.title.uppercase(),
                             color = Color(0xFF0F7A38),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
 
@@ -84,6 +73,7 @@ fun SongStructureView(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SongStructureLine(
     line: String,
@@ -91,48 +81,50 @@ private fun SongStructureLine(
     scale: String?,
     transposition: Int
 ) {
-    val lineRender = buildLineRender(
-        line = line,
-        tonic = tonic,
-        scale = scale,
-        transposition = transposition
-    ) ?: return
+    val items = buildChordWordList(line, tonic, scale, transposition)
+    if (items.isEmpty()) return
 
-    val scrollState = rememberScrollState()
-
-    Column(
-        modifier = Modifier.horizontalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+    FlowRow(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = lineRender.chords,
-            color = Color(0xFF198754),
-            fontWeight = FontWeight.SemiBold,
-            fontFamily = FontFamily.Monospace,
-            softWrap = false,
-            overflow = TextOverflow.Clip
-        )
-        Text(
-            text = lineRender.lyrics,
-            color = Color.Black,
-            fontFamily = FontFamily.Monospace,
-            softWrap = false,
-            overflow = TextOverflow.Clip
-        )
+        items.forEach { item ->
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.padding(end = 8.dp)
+            ) {
+                // Acorde: Si no hay, no ocupa espacio vertical pero mantiene alineación
+                Text(
+                    text = item.chord,
+                    color = Color(0xFF198754),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 14.sp
+                )
+                // Palabra: Fuente limpia y legible
+                Text(
+                    text = item.word,
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        }
     }
 }
 
-private data class LineRender(
-    val chords: String,
-    val lyrics: String
+private data class ChordWord(
+    val chord: String,
+    val word: String
 )
 
-private fun buildLineRender(
+private fun buildChordWordList(
     line: String,
     tonic: String,
     scale: String?,
     transposition: Int
-): LineRender? {
+): List<ChordWord> {
     val tokenRegex = Regex("(\\$\\d)")
     val tokens = mutableListOf<String>()
     var lastIndex = 0
@@ -144,80 +136,56 @@ private fun buildLineRender(
         tokens.add(match.value)
         lastIndex = match.range.last + 1
     }
+    if (lastIndex < line.length) tokens.add(line.substring(lastIndex))
 
-    if (lastIndex < line.length) {
-        tokens.add(line.substring(lastIndex))
-    }
+    val result = mutableListOf<ChordWord>()
+    var currentChord = ""
 
-    if (tokens.isEmpty()) {
-        tokens.add(line)
-    }
-
-    val pairs = mutableListOf<Pair<String, String>>()
-    var index = 0
-
-    while (index < tokens.size) {
-        val token = tokens[index]
+    tokens.forEach { token ->
         if (token.matches(Regex("^\\$\\d$"))) {
+            // Es un acorde: lo guardamos para la siguiente palabra
             val degree = token.drop(1).toIntOrNull()
-            val chord = resolveChord(degree, tonic, scale, transposition)
-            val text = tokens.getOrNull(index + 1).orEmpty()
-            pairs.add(chord to text)
-            index += 2
+            currentChord = resolveChord(degree, tonic, scale, transposition)
         } else {
-            if (token.isNotEmpty()) {
-                pairs.add("" to token)
+            // Es texto: lo limpiamos de espacios extra y lo dividimos en palabras
+            val words = token.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }
+
+            if (words.isNotEmpty()) {
+                words.forEachIndexed { i, word ->
+                    if (i == 0) {
+                        // La primera palabra recibe el acorde acumulado
+                        result.add(ChordWord(currentChord, word))
+                        currentChord = ""
+                    } else {
+                        // Las palabras siguientes de este bloque van sin acorde
+                        result.add(ChordWord("", word))
+                    }
+                }
             }
-            index += 1
         }
     }
 
-    if (pairs.isEmpty()) {
-        return null
+    // Si quedó un acorde al final sin palabra (raro, pero posible)
+    if (currentChord.isNotEmpty()) {
+        result.add(ChordWord(currentChord, ""))
     }
 
-    val chords = buildString {
-        pairs.forEach { (chord, text) ->
-            append(chord.padEnd(max(text.length, chord.length + 1), ' '))
-        }
-    }
-
-    val lyrics = buildString {
-        pairs.forEach { (chord, text) ->
-            append(text.padEnd(max(text.length, chord.length + 1), ' '))
-        }
-    }
-
-    return LineRender(chords = chords, lyrics = lyrics)
+    return result
 }
 
 fun transposeKey(tonic: String, transposition: Int): String {
     val normalizedTonic = flats[tonic] ?: tonic
     val tonicIndex = notes.indexOf(normalizedTonic)
-    if (tonicIndex == -1) {
-        return tonic
-    }
-
+    if (tonicIndex == -1) return tonic
     val index = ((tonicIndex + transposition) % 12 + 12) % 12
     return notes[index]
 }
 
-private fun resolveChord(
-    degree: Int?,
-    tonic: String,
-    scale: String?,
-    transposition: Int
-): String {
-    if (degree == null || degree !in 1..7) {
-        return "$${degree ?: ""}"
-    }
-
+private fun resolveChord(degree: Int?, tonic: String, scale: String?, transposition: Int): String {
+    if (degree == null || degree !in 1..7) return ""
     val normalizedTonic = flats[tonic] ?: tonic
     val tonicIndex = notes.indexOf(normalizedTonic)
-    if (tonicIndex == -1) {
-        return "$$degree"
-    }
-
+    if (tonicIndex == -1) return ""
     val useMinorScale = scale == "Menor"
     val degrees = if (useMinorScale) minorDegrees else majorDegrees
     val types = if (useMinorScale) minorTypes else majorTypes
