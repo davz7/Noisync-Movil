@@ -14,6 +14,9 @@ object RetrofitClient {
     @Volatile
     private var apiService: ApiService? = null
 
+    @Volatile
+    private var cachedOkHttpClient: OkHttpClient? = null
+
     fun init(context: Context) {
         if (apiService != null) {
             return
@@ -22,6 +25,14 @@ object RetrofitClient {
         synchronized(this) {
             if (apiService == null) {
                 apiService = createRetrofit(context.applicationContext).create(ApiService::class.java)
+            }
+        }
+    }
+
+    fun getOkHttpClient(context: Context): OkHttpClient {
+        return cachedOkHttpClient ?: synchronized(this) {
+            cachedOkHttpClient ?: createOkHttpClient(context.applicationContext).also {
+                cachedOkHttpClient = it
             }
         }
     }
@@ -47,7 +58,7 @@ object RetrofitClient {
     private fun createRetrofit(context: Context): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(createOkHttpClient(context))
+            .client(getOkHttpClient(context))
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
