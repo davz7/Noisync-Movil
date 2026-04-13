@@ -30,7 +30,8 @@ object RetrofitClient {
     }
 
     fun getOkHttpClient(context: Context): OkHttpClient {
-        return cachedOkHttpClient ?: synchronized(this) {
+        if (cachedOkHttpClient != null) return cachedOkHttpClient!!
+        return synchronized(this) {
             cachedOkHttpClient ?: createOkHttpClient(context.applicationContext).also {
                 cachedOkHttpClient = it
             }
