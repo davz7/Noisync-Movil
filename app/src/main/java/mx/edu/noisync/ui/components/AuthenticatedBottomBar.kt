@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 
 enum class AuthenticatedDestination {
     SONGS,
+    MY_SONGS,
     TEAM,
     INSTRUMENTS,
     PROFILE
@@ -33,6 +34,7 @@ enum class AuthenticatedDestination {
 fun AuthenticatedBottomBar(
     selectedDestination: AuthenticatedDestination,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -54,6 +56,11 @@ fun AuthenticatedBottomBar(
                     label = "Canciones",
                     isSelected = selectedDestination == AuthenticatedDestination.SONGS,
                     onClick = onOpenSongs
+                )
+                AuthenticatedBottomBarItem(
+                    label = "Mis canciones",
+                    isSelected = selectedDestination == AuthenticatedDestination.MY_SONGS,
+                    onClick = onOpenMySongs
                 )
                 AuthenticatedBottomBarItem(
                     label = "Musicos",
@@ -87,7 +94,7 @@ private fun AuthenticatedBottomBarItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(horizontal = 6.dp, vertical = 4.dp)
+            .padding(horizontal = 4.dp, vertical = 4.dp)
     ) {
         Box(
             modifier = Modifier
@@ -101,7 +108,7 @@ private fun AuthenticatedBottomBarItem(
         Text(
             text = label,
             color = textColor,
-            fontSize = 12.sp,
+            fontSize = 10.sp,
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
             modifier = Modifier.padding(top = 8.dp, bottom = 2.dp)
         )

@@ -146,34 +146,6 @@ fun VisitorHomeScreen(
                     }
                 )
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(5.dp)
-            ) {
-                Surface(
-                    onClick = onShowAll,
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 1.dp,
-                    color = if (selectedFilter == VisitorSongsFilter.ALL) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
-                ) {
-                    Text(
-                        text = "Todas",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-
-                Surface(
-                    onClick = onShowRecent,
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 1.dp,
-                    color = if (selectedFilter == VisitorSongsFilter.RECENT) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
-                ) {
-                    Text(
-                        text = "Recientes",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
-            }
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = Color.White,

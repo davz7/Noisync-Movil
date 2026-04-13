@@ -39,6 +39,7 @@ import mx.edu.noisync.ui.components.AuthenticatedDestination
 fun UserTeamScreen(
     navController: NavController,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -123,6 +124,7 @@ fun UserTeamScreen(
             AuthenticatedBottomBar(
                 selectedDestination = AuthenticatedDestination.TEAM,
                 onOpenSongs = onOpenSongs,
+                onOpenMySongs = onOpenMySongs,
                 onOpenTeam = onOpenTeam,
                 onOpenInstruments = onOpenInstruments,
                 onOpenProfile = onOpenProfile

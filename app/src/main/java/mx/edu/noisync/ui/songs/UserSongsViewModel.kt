@@ -24,10 +24,16 @@ enum class UserSongsFilter {
     PRIVATE
 }
 
+enum class UserSongsMode {
+    GENERAL,
+    MY_SONGS
+}
+
 class UserSongsViewModel : ViewModel() {
     private val songRepository = RepositoryProvider.songRepository
     private val pageSize = 50
     private var searchJob: Job? = null
+    private var currentMode = UserSongsMode.GENERAL
     private var currentSongs: List<SongListItem> = emptyList()
 
     private val _uiState = MutableStateFlow<UserSongsUiState>(UserSongsUiState.Loading)
@@ -39,14 +45,18 @@ class UserSongsViewModel : ViewModel() {
     private val _selectedFilter = MutableStateFlow(UserSongsFilter.ALL)
     val selectedFilter: StateFlow<UserSongsFilter> = _selectedFilter.asStateFlow()
 
-    init {
-        loadSongs()
+    fun setMode(mode: UserSongsMode) {
+        val shouldReload = currentMode != mode || currentSongs.isEmpty()
+        currentMode = mode
+        if (shouldReload) {
+            loadSongs(query = _searchQuery.value.takeIf { it.isNotBlank() })
+        }
     }
 
     fun loadSongs(query: String? = null) {
         viewModelScope.launch {
             _uiState.value = UserSongsUiState.Loading
-            _uiState.value = when (val result = loadAllSongs(query)) {
+            _uiState.value = when (val result = loadSongsForCurrentMode(query)) {
                 is RepositoryResult.Success -> {
                     currentSongs = result.data
                     UserSongsUiState.Success(applyFilter(currentSongs, _selectedFilter.value))
@@ -79,30 +89,16 @@ class UserSongsViewModel : ViewModel() {
         }
     }
 
-    private suspend fun loadAllSongs(query: String?): RepositoryResult<List<SongListItem>> {
-        val publicSongsResult = loadAllPages { page, size ->
-            songRepository.getPublicSongs(query = query, page = page, size = size)
-        }
-        if (publicSongsResult is RepositoryResult.Error) {
-            return publicSongsResult
-        }
+    private suspend fun loadSongsForCurrentMode(query: String?): RepositoryResult<List<SongListItem>> {
+        return when (currentMode) {
+            UserSongsMode.GENERAL -> loadAllPages { page, size ->
+                songRepository.getPublicSongs(query = query, page = page, size = size)
+            }
 
-        val visibleSongsResult = loadAllPages { page, size ->
-            songRepository.getVisibleSongs(query = query, page = page, size = size)
+            UserSongsMode.MY_SONGS -> loadAllPages { page, size ->
+                songRepository.getVisibleSongs(query = query, page = page, size = size)
+            }
         }
-        if (visibleSongsResult is RepositoryResult.Error) {
-            return visibleSongsResult
-        }
-
-        val publicSongs = (publicSongsResult as RepositoryResult.Success).data
-        val privateSongs = (visibleSongsResult as RepositoryResult.Success).data
-            .filter { !it.isPublic }
-
-        val mergedSongs = linkedMapOf<String, SongListItem>()
-        publicSongs.forEach { mergedSongs[it.id] = it }
-        privateSongs.forEach { mergedSongs[it.id] = it }
-
-        return RepositoryResult.Success(mergedSongs.values.toList())
     }
 
     private suspend fun loadAllPages(
@@ -129,12 +125,14 @@ class UserSongsViewModel : ViewModel() {
         songs: List<SongListItem>,
         filter: UserSongsFilter
     ): List<SongListItem> {
-        return when (filter) {
-            UserSongsFilter.ALL -> songs.filter { it.isPublic }
-            UserSongsFilter.RECENT -> songs
-                .filter { it.isPublic }
-                .sortedByDescending { it.createdAt.orEmpty() }
-            UserSongsFilter.PRIVATE -> songs.filter { !it.isPublic }
+        return when (currentMode) {
+            UserSongsMode.GENERAL -> songs.filter { it.isPublic }
+            UserSongsMode.MY_SONGS -> when (filter) {
+                UserSongsFilter.ALL -> songs.filter { it.isPublic }
+                UserSongsFilter.RECENT -> songs.sortedByDescending { it.createdAt.orEmpty() }
+                UserSongsFilter.PRIVATE -> songs.filter { !it.isPublic }
+            }
         }
     }
+
 }

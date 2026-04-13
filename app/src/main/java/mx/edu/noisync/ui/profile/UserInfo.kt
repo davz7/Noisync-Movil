@@ -44,6 +44,7 @@ import mx.edu.noisync.ui.components.AuthenticatedDestination
 fun UserInfo(
     navController: NavController,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -64,6 +65,7 @@ fun UserInfo(
         UserInfoUiState.Loading -> {
             UserInfoLoadingContent(
                 onOpenSongs = onOpenSongs,
+                onOpenMySongs = onOpenMySongs,
                 onOpenTeam = onOpenTeam,
                 onOpenInstruments = onOpenInstruments,
                 onOpenProfile = onOpenProfile
@@ -79,6 +81,7 @@ fun UserInfo(
                 displayBand = profile.bandName ?: "Sin banda",
                 displayEmail = profile.email ?: "No disponible",
                 onOpenSongs = onOpenSongs,
+                onOpenMySongs = onOpenMySongs,
                 onOpenTeam = onOpenTeam,
                 onOpenInstruments = onOpenInstruments,
                 onOpenProfile = onOpenProfile
@@ -89,6 +92,7 @@ fun UserInfo(
             UserInfoErrorContent(
                 onRetry = viewModel::loadProfile,
                 onOpenSongs = onOpenSongs,
+                onOpenMySongs = onOpenMySongs,
                 onOpenTeam = onOpenTeam,
                 onOpenInstruments = onOpenInstruments,
                 onOpenProfile = onOpenProfile
@@ -105,6 +109,7 @@ private fun UserInfoContent(
     displayBand: String,
     displayEmail: String,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -276,6 +281,7 @@ private fun UserInfoContent(
         AuthenticatedBottomBar(
             selectedDestination = AuthenticatedDestination.PROFILE,
             onOpenSongs = onOpenSongs,
+            onOpenMySongs = onOpenMySongs,
             onOpenTeam = onOpenTeam,
             onOpenInstruments = onOpenInstruments,
             onOpenProfile = onOpenProfile
@@ -293,6 +299,7 @@ fun UserInfoPreview() {
         displayBand = "Los Nocturnos",
         displayEmail = "juan.delgado@example.com",
         onOpenSongs = {},
+        onOpenMySongs = {},
         onOpenTeam = {},
         onOpenInstruments = {},
         onOpenProfile = {}
@@ -302,6 +309,7 @@ fun UserInfoPreview() {
 @Composable
 private fun UserInfoLoadingContent(
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -324,6 +332,7 @@ private fun UserInfoLoadingContent(
         AuthenticatedBottomBar(
             selectedDestination = AuthenticatedDestination.PROFILE,
             onOpenSongs = onOpenSongs,
+            onOpenMySongs = onOpenMySongs,
             onOpenTeam = onOpenTeam,
             onOpenInstruments = onOpenInstruments,
             onOpenProfile = onOpenProfile
@@ -335,6 +344,7 @@ private fun UserInfoLoadingContent(
 private fun UserInfoErrorContent(
     onRetry: () -> Unit,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -382,6 +392,7 @@ private fun UserInfoErrorContent(
         AuthenticatedBottomBar(
             selectedDestination = AuthenticatedDestination.PROFILE,
             onOpenSongs = onOpenSongs,
+            onOpenMySongs = onOpenMySongs,
             onOpenTeam = onOpenTeam,
             onOpenInstruments = onOpenInstruments,
             onOpenProfile = onOpenProfile
