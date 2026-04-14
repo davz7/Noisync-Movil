@@ -41,19 +41,22 @@ fun VisitorNavigation() {
                 onRetry = { viewModel.loadSongs(searchQuery.takeIf { it.isNotBlank() }) },
                 onLoadMore = viewModel::loadMoreSongs,
                 onOpenSong = { song ->
-                    navController.navigate(AppsScreens.SongDetailScreen.createRoute(song.id))
+                    navController.navigate(AppsScreens.SongDetailScreen.createRoute(song.id, true))
                 }
             )
         }
 
         composable(
             route = AppsScreens.SongDetailScreen.route,
-            arguments = listOf(navArgument(AppsScreens.SongDetailScreen.ARG_SONG_ID) { type = NavType.StringType })
+            arguments = listOf(
+                navArgument(AppsScreens.SongDetailScreen.ARG_SONG_ID) { type = NavType.StringType },
+                navArgument(AppsScreens.SongDetailScreen.ARG_IS_PUBLIC) { type = NavType.BoolType }
+            )
         ) { backStackEntry ->
             SongDetailScreen(
                 navController = navController,
                 songId = backStackEntry.arguments?.getString(AppsScreens.SongDetailScreen.ARG_SONG_ID),
-                isPublicSong = true
+                isPublicSong = backStackEntry.arguments?.getBoolean(AppsScreens.SongDetailScreen.ARG_IS_PUBLIC) == true
             )
         }
     }

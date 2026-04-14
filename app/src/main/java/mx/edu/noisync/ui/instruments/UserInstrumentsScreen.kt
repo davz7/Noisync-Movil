@@ -42,6 +42,7 @@ import mx.edu.noisync.ui.components.AuthenticatedDestination
 fun UserInstrumentsScreen(
     navController: NavController,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -123,6 +124,7 @@ fun UserInstrumentsScreen(
         AuthenticatedBottomBar(
             selectedDestination = AuthenticatedDestination.INSTRUMENTS,
             onOpenSongs = onOpenSongs,
+            onOpenMySongs = onOpenMySongs,
             onOpenTeam = onOpenTeam,
             onOpenInstruments = onOpenInstruments,
             onOpenProfile = onOpenProfile

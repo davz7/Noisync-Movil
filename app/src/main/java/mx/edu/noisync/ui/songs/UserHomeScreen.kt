@@ -34,6 +34,9 @@ import mx.edu.noisync.ui.components.AuthenticatedDestination
 @Composable
 fun UserHomeScreen(
     songs: List<SongListItem>,
+    title: String = "Canciones",
+    showFilters: Boolean = true,
+    selectedDestination: AuthenticatedDestination = AuthenticatedDestination.SONGS,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     selectedFilter: UserSongsFilter,
@@ -45,6 +48,7 @@ fun UserHomeScreen(
     onRetry: (() -> Unit)? = null,
     onOpenSong: (SongListItem) -> Unit?,
     onOpenSongs: () -> Unit,
+    onOpenMySongs: () -> Unit,
     onOpenTeam: () -> Unit,
     onOpenInstruments: () -> Unit,
     onOpenProfile: () -> Unit
@@ -68,7 +72,7 @@ fun UserHomeScreen(
                 )
                 Spacer(modifier = Modifier.width(5.dp))
                 Text(
-                    text = "Canciones",
+                    text = title,
                     color = Color.Black,
                     fontSize = 20.sp
                 )
@@ -120,44 +124,46 @@ fun UserHomeScreen(
                     }
                 )
             }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
-            ) {
-                Surface(
-                    onClick = onShowAll,
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 1.dp,
-                    color = if (selectedFilter == UserSongsFilter.ALL) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
+            if (showFilters) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)
                 ) {
-                    Text(
-                        text = "Todas",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
+                    Surface(
+                        onClick = onShowAll,
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = if (selectedFilter == UserSongsFilter.ALL) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
+                    ) {
+                        Text(
+                            text = "Publicas",
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
 
-                Surface(
-                    onClick = onShowRecent,
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 1.dp,
-                    color = if (selectedFilter == UserSongsFilter.RECENT) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
-                ) {
-                    Text(
-                        text = "Recientes",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                }
+                    Surface(
+                        onClick = onShowRecent,
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = if (selectedFilter == UserSongsFilter.RECENT) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
+                    ) {
+                        Text(
+                            text = "Recientes",
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
 
-                Surface(
-                    onClick = onShowPrivate,
-                    shape = RoundedCornerShape(10.dp),
-                    shadowElevation = 1.dp,
-                    color = if (selectedFilter == UserSongsFilter.PRIVATE) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
-                ) {
-                    Text(
-                        text = "Privadas",
-                        modifier = Modifier.padding(10.dp)
-                    )
+                    Surface(
+                        onClick = onShowPrivate,
+                        shape = RoundedCornerShape(10.dp),
+                        shadowElevation = 1.dp,
+                        color = if (selectedFilter == UserSongsFilter.PRIVATE) Color(0xFFE9ECEF) else Color(0xFFF4F5F6)
+                    ) {
+                        Text(
+                            text = "Privadas",
+                            modifier = Modifier.padding(10.dp)
+                        )
+                    }
                 }
             }
             Surface(
@@ -225,8 +231,9 @@ fun UserHomeScreen(
                 }
             }
             AuthenticatedBottomBar(
-                selectedDestination = AuthenticatedDestination.SONGS,
+                selectedDestination = selectedDestination,
                 onOpenSongs = onOpenSongs,
+                onOpenMySongs = onOpenMySongs,
                 onOpenTeam = onOpenTeam,
                 onOpenInstruments = onOpenInstruments,
                 onOpenProfile = onOpenProfile
