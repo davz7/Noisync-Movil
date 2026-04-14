@@ -8,8 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "http://10.0.2.2:8080/"
-    //private const val BASE_URL = "http://192.168.110.204:8080/"
+    //private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "http://192.168.0.123:8080/"
 
     @Volatile
     private var apiService: ApiService? = null
@@ -72,6 +72,7 @@ object RetrofitClient {
         return OkHttpClient.Builder()
             .addInterceptor(AuthInterceptor(context))
             .addInterceptor(loggingInterceptor)
+            .authenticator(SessionExpirationAuthenticator(context))
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)

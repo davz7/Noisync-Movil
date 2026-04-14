@@ -2,10 +2,10 @@ package mx.edu.noisync
 
 import android.app.Application
 import coil.ImageLoader
-import coil.SingletonImageLoader
+import coil.ImageLoaderFactory
 import mx.edu.noisync.core.network.RetrofitClient
 
-class NoisyncApp : Application(), SingletonImageLoader.Factory {
+class NoisyncApp : Application(), ImageLoaderFactory {
 
     override fun onCreate() {
         super.onCreate()

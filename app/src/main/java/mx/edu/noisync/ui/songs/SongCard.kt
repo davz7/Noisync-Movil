@@ -2,14 +2,12 @@ package mx.edu.noisync.ui.songs
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,15 +41,14 @@ fun SongCard(song: SongListItem, onOpen: () -> Unit) {
         ) {
             Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .height(IntrinsicSize.Min),
+                    .weight(1f),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 SongCover(
                     title = song.title,
                     coverUrl = song.coverUrl,
                     modifier = Modifier
-                        .fillMaxHeight()
+                        .size(88.dp)
                         .aspectRatio(1f),
                     shape = RoundedCornerShape(4.dp),
                     initialsSize = 18.sp

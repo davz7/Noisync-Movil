@@ -2,6 +2,7 @@ package mx.edu.noisync.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import mx.edu.noisync.core.session.SessionExpirationManager
 import mx.edu.noisync.data.model.LoginResponse
 
 class SessionManager(context: Context) {
@@ -20,6 +21,8 @@ class SessionManager(context: Context) {
             .putString(KEY_ROLE, response.role)
             .putBoolean(KEY_MUST_CHANGE_PASSWORD, response.mustChangePassword)
             .apply()
+
+        SessionExpirationManager.reset()
     }
     
     fun getAccessToken(): String? {
